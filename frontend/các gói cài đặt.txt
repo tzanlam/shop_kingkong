@@ -1,0 +1,6 @@
+npm create vite@latest
+npm install antd --save
+npm install axios
+npm i react-toastify
+npm i react-router-dom
+npm install -D tailwindcss
