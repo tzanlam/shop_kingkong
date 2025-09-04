@@ -1,15 +1,45 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import menuItems from "../data/menuItems";
+import logoBag from "../assets/logoBag.png";
+import { GrFavorite } from "react-icons/gr";
+import { HiOutlineShoppingCart } from "react-icons/hi2";
+import { SlUser } from "react-icons/sl";
 
 const Header = () => {
   return (
     <header className="bg-white shadow-md">
-      <div className="container px-8 py-6 mx-auto items-center justify-between">
-        <div className="flex items-center">
-          <img />
+      <div className="container px-8 py-6 mx-auto flex items-center justify-center relative">
+        <div className="flex items-center absolute left-8">
+          <img
+            src={logoBag}
+            alt="Logo"
+            className="h-16 w-auto object-contain"
+          />
         </div>
 
-        <nav className="flex space-x-12"></nav>
+        <nav className="flex space-x-12">
+          {menuItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="text-gray-600 hover:text-blue-600 "
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <div className="flex items-center absolute right-12 space-x-6">
+          <div className="cursor-pointer hover:text-blue-600">
+            <GrFavorite size={22} />
+          </div>
+          <div className="cursor-pointer hover:text-blue-600">
+            <HiOutlineShoppingCart size={22} />
+          </div>
+          <div className="cursor-pointer hover:text-blue-600">
+            <SlUser size={20} />
+          </div>
+        </div>
       </div>
     </header>
   );
