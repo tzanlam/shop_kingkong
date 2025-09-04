@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,25 +23,23 @@ import java.util.Collections;
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
-        if (token != null) {
+        if (token != null && jwtTokenUtil.isTokenValid(token, false)) {
             try {
-                if (jwtTokenUtil.isTokenValid(token, false)) {
-                    String username = jwtTokenUtil.getUsernameFromToken(token, false);
-                    String position = jwtTokenUtil.getPositionFromAccessToken(token);
+                String username = jwtTokenUtil.getUsernameFromToken(token, false);
+                String position = jwtTokenUtil.getPositionFromAccessToken(token);
 
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            username,
-                            null,
-                            Collections.singletonList(new SimpleGrantedAuthority(position))
-                    );
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    log.debug("Authenticated user: {}, position: {}", username, position);
-                }
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        Collections.singletonList(new SimpleGrantedAuthority(position))
+                );
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.debug("Authenticated user: {}, position: {}", username, position);
             } catch (Exception e) {
-                log.warn("Invalid or expired token: {}", e.getMessage());
+                log.warn("Error processing token: {}", e.getMessage());
             }
         }
 

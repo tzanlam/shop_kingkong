@@ -2,6 +2,7 @@ package bag.configuaration.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,13 @@ public class JwtTokenUtil {
 
     @Value("${REFRESH_TOKEN_EXPIRATION}")
     private Long refreshTokenExpiration;
+
+    @PostConstruct
+    public void init() {
+        if (accessTokenSecret.length() < 64 || refreshTokenSecret.length() < 64) {
+            throw new IllegalArgumentException("Secret key must be at least 64 characters for HS512");
+        }
+    }
 
     public SecretKey getSigningKey(String secret) {
         return Keys.hmacShaKeyFor(secret.getBytes());

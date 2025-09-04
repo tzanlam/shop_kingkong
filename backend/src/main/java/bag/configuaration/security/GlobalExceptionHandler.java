@@ -1,57 +1,52 @@
 package bag.configuaration.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(Exception.class)
-    public void handleAllExceptions(Exception ex, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex, HttpServletRequest request) {
         log.error("Unhandled exception occurred: {}", ex.getMessage(), ex);
-
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        errorResponse.put("error", "Internal Server Error");
-        errorResponse.put("message", "An unexpected error occurred: " + ex.getMessage());
-        errorResponse.put("path", request.getRequestURI());
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), errorResponse);
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public void handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
         log.warn("Invalid argument: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Bad Request", ex.getMessage(), request.getRequestURI());
+    }
 
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<Map<String, Object>> handleJwtException(JwtException ex, HttpServletRequest request) {
+        log.warn("JWT error: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Unauthorized", "Invalid JWT token: " + ex.getMessage(), request.getRequestURI());
+    }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        log.warn("Access denied: {}", ex.getMessage());
+        return buildErrorResponse(HttpStatus.FORBIDDEN, "Forbidden", ex.getMessage(), request.getRequestURI());
+    }
+
+    private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String error, String message, String path) {
         Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
-        errorResponse.put("error", "Bad Request");
-        errorResponse.put("message", ex.getMessage());
-        errorResponse.put("path", request.getRequestURI());
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), errorResponse);
+        errorResponse.put("status", status.value());
+        errorResponse.put("error", error);
+        errorResponse.put("message", message);
+        errorResponse.put("path", path);
+        errorResponse.put("timestamp", LocalDateTime.now());
+        return new ResponseEntity<>(errorResponse, status);
     }
 }
-
