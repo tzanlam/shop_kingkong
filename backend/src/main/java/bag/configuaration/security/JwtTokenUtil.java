@@ -92,14 +92,14 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public String generateAccessToken(Long userId, String username, String position) {
+    public String generateAccessToken(int userId, String username, String position) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("accountId", userId);
         claims.put("position", position);
         return doGenerateToken(claims, username, false);
     }
 
-    public String generateRefreshToken(Long userId, String username) {
+    public String generateRefreshToken(int userId, String username) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("accountId", userId);
         return doGenerateToken(claims, username, true);
