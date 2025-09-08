@@ -11,7 +11,7 @@ const Layout = () => {
       <Header />
 
       {/* Nội dung chính với padding */}
-      <main className="flex-grow  pb-20">
+      <main className="flex-grow pb-20">
         <Outlet />{" "}
         {/* Các trang như HomePage, ProductDetails sẽ được render ở đây */}
       </main>
