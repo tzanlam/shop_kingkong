@@ -1,29 +1,22 @@
+import { store } from "../redux/store";
+import axiosClient from "./AxiosConfig";
+import { setAuth, clearAuth } from "../redux/slices/AuthSlice";
 
 const AuthService = {
-    login: async (LoginRequest) => {
-        try {
-            const res = await axios.post("/auth/login", LoginRequest);
-            setAccessToken(res.data.accessToken);
-            return res.data;
-        } catch (error) {
-            throw error;
-        }
-    },
-    logout: async (accountId) => {
-        try {
-            await axios.post(`/auth/logout/${accountId}`);
-            clearAccessToken();
-        } catch (error) {
-            throw error;
-        }
-    },
-    refresh: async () => {
-        try {
-            const res = await axios.post("/auth/refresh");
-            setAccessToken(res.data.accessToken);
-            return res.data;
-        } catch (error) {
-            throw error;
-        }
-    }
-}
+  login: async (LoginRequest) => {
+    const res = await axiosClient.post("auth/login", LoginRequest);
+    store.dispatch(setAuth({ accessToken: res.data.accessToken, accountId: res.data.accountId }));
+    return res.data;
+  },
+  logout: async (accountId) => {
+    await axiosClient.post(`auth/logout/${accountId}`);
+    store.dispatch(clearAuth());
+  },
+  refresh: async () => {
+    const res = await axiosClient.post("auth/refresh");
+    store.dispatch(setAuth({ accessToken: res.data.accessToken, accountId: res.data.accountId }));
+    return res.data;
+  },
+};
+
+export default AuthService;
