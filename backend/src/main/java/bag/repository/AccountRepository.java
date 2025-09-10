@@ -10,6 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    @Query("select a from Account a where a.email = :email")
-    Optional<Account> findByEmail(@Param("email")String email);
+    boolean existsByUsername(String s);
+    boolean existsByEmail(String s);
+
+    @Query("select a from Account a where a.email = :email and a.status = bag.modal.entity.Account.AccountStatus.ACTIVE")
+    Optional<Account> findByEmailAndActiveTrue(@Param("email")String email);
+
 }

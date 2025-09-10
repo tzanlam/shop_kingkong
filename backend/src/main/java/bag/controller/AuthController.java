@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,6 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<?> refresh(HttpServletRequest request){
         try {
             String refreshToken = null;
@@ -54,6 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout/{accountId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<?> logout(@PathVariable int accountId){
         authService.logout(accountId);
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
