@@ -1,21 +1,20 @@
-import { store } from "../redux/store";
-import axiosClient from "./AxiosConfig";
-import { setAuth, clearAuth } from "../redux/slices/AuthSlice";
+import axios from "axios";
+
+const axiosRaw = axios.create({
+  baseURL: "http://localhost:8081/",
+  withCredentials: true,
+  headers: { "Content-Type": "application/json" },
+});
 
 const AuthService = {
-  login: async (LoginRequest) => {
-    const res = await axiosClient.post("auth/login", LoginRequest);
-    store.dispatch(setAuth({ accessToken: res.data.accessToken, accountId: res.data.accountId }));
-    return res.data;
+  login(loginRequest) {
+    return axiosRaw.post("auth/login", loginRequest);
   },
-  logout: async (accountId) => {
-    await axiosClient.post(`auth/logout/${accountId}`);
-    store.dispatch(clearAuth());
+  logout(accountId) {
+    return axiosRaw.post(`auth/logout/${accountId}`);
   },
-  refresh: async () => {
-    const res = await axiosClient.post("auth/refresh");
-    store.dispatch(setAuth({ accessToken: res.data.accessToken, accountId: res.data.accountId }));
-    return res.data;
+  refresh() {
+    return axiosRaw.post("auth/refresh");
   },
 };
 

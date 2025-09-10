@@ -1,5 +1,5 @@
-import { store } from "../redux/store";
 import axios from "axios";
+import { store } from "../redux/store";
 import AuthService from "./AuthService";
 import { setAuth, clearAuth } from "../redux/slices/AuthSlice";
 
@@ -13,10 +13,13 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const accessToken = store.getState().auth.accessToken;
+    const state = store.getState();
+    const accessToken = state.auth.accessToken;
+
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -25,18 +28,25 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
       try {
         const res = await AuthService.refresh();
-        const newAccessToken = res.accessToken;
-        store.dispatch(setAuth({ accessToken: newAccessToken, accountId: res.accountId }));
-        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
-        return axiosClient(error.config);
-      } catch {
+        const { accessToken: newAccessToken, accountId } = res.data;
+
+        store.dispatch(setAuth({ accessToken: newAccessToken, accountId }));
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return axiosClient(originalRequest);
+      } catch (err) {
         store.dispatch(clearAuth());
         window.location.href = "/login";
+        return Promise.reject(err);
       }
     }
+
     return Promise.reject(error);
   }
 );
