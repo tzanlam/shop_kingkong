@@ -1,6 +1,9 @@
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { Provider, PersistGate } from "react-redux";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import "react-toastify/dist/ReactToastify.css";
+import "antd/dist/reset.css";
 import { store, persistor } from "./redux/store";
 import router from "./routes/RouterConfig";
 
@@ -11,7 +14,9 @@ function App() {
         <RouterProvider router={router} />
       </PersistGate>
       <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer />
     </Provider>
+
   );
 }
 

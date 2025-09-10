@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import AuthService from "../../service/AuthService";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import AuthService from '../../service/AuthService';
 
 export const LOGIN = createAsyncThunk("auth/login", async (loginRequest, { rejectWithValue }) => {
   try {
@@ -47,7 +47,13 @@ const AuthSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    clearAuth: () => initialState, // reset về mặc định
+    clearAuth: () => initialState,
+        setAuth: (state, action) => {
+      state.accessToken = action.payload.accessToken;
+      state.accountId = action.payload.accountId || null;
+      state.error = null;
+      state.loading = false;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -90,5 +96,5 @@ export const selectAuthInfo = (state) => ({
   accountId: state.auth.accountId,
 });
 
-export const { clearAuth } = AuthSlice.actions;
+export const { clearAuth, setAuth } = AuthSlice.actions;
 export default AuthSlice.reducer;
