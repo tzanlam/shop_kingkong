@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@Table
+@Table(name = "orders")
 @EqualsAndHashCode(callSuper=true)
 public class Order extends Time{
     @Id

@@ -19,7 +19,7 @@ import java.time.Year;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
 
-    @Value("${app.name}")
+    @Value("${my.app}")
     private String appName;
 
     @Value("${spring.mail.host}")

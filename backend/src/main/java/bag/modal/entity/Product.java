@@ -27,13 +27,18 @@ public class Product extends Time{
     @Column(nullable = false)
     private int quantity;
 
-    @OneToMany(mappedBy = "products")
+    @OneToMany(mappedBy = "product")
     private List<ProductImage> image;
 
     @ManyToOne
     @JoinColumn
     private Category category;
 
-    @OneToMany(mappedBy = "products")
+    @OneToMany(mappedBy = "product")
     private List<Review> reviews;
+
+    @ManyToOne
+    @JoinColumn
+    private Cart cart;
+
 }

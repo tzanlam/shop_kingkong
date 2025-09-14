@@ -15,16 +15,16 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
-    @Value("${JWT_ACCESS_TOKEN}")
+    @Value("${jwt.access-token}")
     private String accessTokenSecret;
 
-    @Value("${JWT_REFRESH_TOKEN}")
+    @Value("${jwt.refresh-token}")
     private String refreshTokenSecret;
 
-    @Value("${ACCESS_TOKEN_EXPIRATION}")
+    @Value("${jwt.access-expiration}")
     private Long accessTokenExpiration;
 
-    @Value("${REFRESH_TOKEN_EXPIRATION}")
+    @Value("${jwt.refresh-expiration}")
     private Long refreshTokenExpiration;
 
     @PostConstruct
@@ -75,7 +75,7 @@ public class JwtTokenUtil {
     }
 
     public boolean isTokenExpired(String token, boolean isRefreshToken) {
-        return !getExpirationDateFromToken(token, isRefreshToken).before(new Date());
+        return getExpirationDateFromToken(token, isRefreshToken).before(new Date());
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject, boolean isRefreshToken) {
