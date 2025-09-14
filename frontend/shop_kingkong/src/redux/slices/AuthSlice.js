@@ -75,7 +75,12 @@ const AuthSlice = createSlice({
         state.accessToken = null;
         state.accountId = null;
       })
-      .addCase(LOGOUT.rejected, setRejected)
+      .addCase(LOGOUT.rejected, (state)=>{
+        state.loading = false
+        state.error = null
+        state.accessToken = null
+        state.accountId = null
+      })
 
       // Refresh Token
       .addCase(REFRESH.fulfilled, (state, action) => {

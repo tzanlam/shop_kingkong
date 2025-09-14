@@ -1,25 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import menuItems from "../data/menuItems";
 import logoBag from "../assets/logoBag.png";
 import { GrFavorite } from "react-icons/gr";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { SlUser } from "react-icons/sl";
 import AuthModal from "./AuthModal";
+import { useSelector, useDispatch } from "react-redux";
+import { LOGOUT } from "../redux/slices/AuthSlice";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openAuth, setOpenAuth] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(false);
+
+  const dispatch = useDispatch();
+  const { accountId } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 50);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = (myId) => {
+    dispatch(LOGOUT(myId))
+      .unwrap()
+      .then(() => setOpenDropdown(false));
+  };
 
   return (
     <>
@@ -57,6 +64,7 @@ const Header = () => {
 
           {/* Icons */}
           <div className="flex items-center absolute right-12 space-x-6">
+            {/* Yêu thích */}
             <div
               className={`cursor-pointer transition-colors duration-200 ${
                 isScrolled
@@ -66,6 +74,8 @@ const Header = () => {
             >
               <GrFavorite size={22} />
             </div>
+
+            {/* Giỏ hàng */}
             <div
               className={`cursor-pointer transition-colors duration-200 ${
                 isScrolled
@@ -75,20 +85,62 @@ const Header = () => {
             >
               <HiOutlineShoppingCart size={22} />
             </div>
-            <div
-              onClick={() => setOpenAuth(true)}
-              className={`cursor-pointer transition-colors duration-200 ${
-                isScrolled
-                  ? "text-gray-600 hover:text-blue-600"
-                  : "text-white hover:text-pink-300"
-              }`}
-            >
-              <SlUser size={20} />
-            </div>
+
+            {/* Tài khoản */}
+            {!accountId ? (
+              // ✅ Chưa login → hiện icon
+              <div
+                onClick={() => setOpenAuth(true)}
+                className={`cursor-pointer transition-colors duration-200 ${
+                  isScrolled
+                    ? "text-gray-600 hover:text-blue-600"
+                    : "text-white hover:text-pink-300"
+                }`}
+              >
+                <SlUser size={20} />
+              </div>
+            ) : (
+              // ✅ Đã login → hiện accountId
+              <div className="relative">
+                <span
+                  onClick={() => setOpenDropdown(!openDropdown)}
+                  className={`cursor-pointer font-medium transition-colors duration-200 ${
+                    isScrolled
+                      ? "text-gray-700 hover:font-semibold"
+                      : "text-white hover:font-semibold"
+                  }`}
+                >
+                  Mã khách hàng: {accountId}
+                </span>
+
+                {openDropdown && (
+                  <div
+                    className="absolute right-0 mt-2 w-56 rounded-xl 
+                      backdrop-blur-md bg-gray-800/40 shadow-xl border border-gray-200/30"
+                  >
+                    <ul className="py-2 text-gray-100">
+                      <li className="px-4 py-2 hover:bg-gray-700/40 cursor-pointer">
+                        Thông tin cá nhân
+                      </li>
+                      <li className="px-4 py-2 hover:bg-gray-700/40 cursor-pointer">
+                        Lịch sử mua hàng
+                      </li>
+                      <li
+                        onClick={() => handleLogout(accountId)}
+                        className="px-4 py-2 hover:bg-gray-700/40 cursor-pointer text-red-400"
+                      >
+                        Đăng xuất
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </header>
 
+      {/* Modal login */}
       <AuthModal open={openAuth} onClose={() => setOpenAuth(false)} />
     </>
   );

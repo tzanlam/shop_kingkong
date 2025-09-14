@@ -90,8 +90,6 @@ const AuthModal = ({ open, onClose }) => {
                     <Input.Password placeholder="Nhập mật khẩu" />
                   </Form.Item>
 
-                  {error && <div className="text-red-500 text-sm">{error}</div>}
-
                   <Button
                     type="primary"
                     htmlType="submit"
