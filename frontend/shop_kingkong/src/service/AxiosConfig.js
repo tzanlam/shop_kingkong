@@ -42,7 +42,6 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (err) {
         store.dispatch(clearAuth());
-        window.location.href = "/";
         return Promise.reject(err);
       }
     }

@@ -14,7 +14,6 @@ function App() {
         <RouterProvider router={router} />
       </PersistGate>
       <ToastContainer position="top-right" autoClose={3000} />
-      <ToastContainer />
     </Provider>
 
   );
