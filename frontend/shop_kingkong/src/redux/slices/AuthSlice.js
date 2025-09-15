@@ -48,7 +48,7 @@ const AuthSlice = createSlice({
   initialState,
   reducers: {
     clearAuth: () => initialState,
-        setAuth: (state, action) => {
+    setAuth: (state, action) => {
       state.accessToken = action.payload.accessToken;
       state.accountId = action.payload.accountId || null;
       state.error = null;
@@ -75,14 +75,10 @@ const AuthSlice = createSlice({
         state.accessToken = null;
         state.accountId = null;
       })
-      .addCase(LOGOUT.rejected, (state)=>{
-        state.loading = false
-        state.error = null
-        state.accessToken = null
-        state.accountId = null
-      })
+      .addCase(LOGOUT.rejected, setRejected)
 
       // Refresh Token
+      .addCase(REFRESH.pending, setPending)
       .addCase(REFRESH.fulfilled, (state, action) => {
         state.accessToken = action.payload.accessToken;
         state.accountId = action.payload.accountId || null;

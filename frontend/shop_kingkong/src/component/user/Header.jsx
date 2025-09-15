@@ -52,8 +52,8 @@ const Header = () => {
                 key={item.label}
                 href={item.href}
                 className={`transition-colors duration-200 ${isScrolled
-                    ? "text-gray-600 hover:text-blue-600"
-                    : "text-white hover:text-pink-300"
+                  ? "text-gray-600 hover:text-blue-600"
+                  : "text-white hover:text-pink-300"
                   }`}
               >
                 {item.label}
@@ -66,8 +66,8 @@ const Header = () => {
             {/* Yêu thích */}
             <div
               className={`cursor-pointer transition-colors duration-200 ${isScrolled
-                  ? "text-gray-600 hover:text-blue-600"
-                  : "text-white hover:text-pink-300"
+                ? "text-gray-600 hover:text-blue-600"
+                : "text-white hover:text-pink-300"
                 }`}
             >
               <GrFavorite size={22} />
@@ -76,8 +76,8 @@ const Header = () => {
             {/* Giỏ hàng */}
             <div
               className={`cursor-pointer transition-colors duration-200 ${isScrolled
-                  ? "text-gray-600 hover:text-blue-600"
-                  : "text-white hover:text-pink-300"
+                ? "text-gray-600 hover:text-blue-600"
+                : "text-white hover:text-pink-300"
                 }`}
             >
               <HiOutlineShoppingCart size={22} />
@@ -89,17 +89,20 @@ const Header = () => {
               <div
                 onClick={() => setOpenAuth(true)}
                 className={`cursor-pointer transition-colors duration-200 ${isScrolled
-                    ? "text-gray-600 hover:text-blue-600"
-                    : "text-white hover:text-pink-300"
+                  ? "text-gray-600 hover:text-blue-600"
+                  : "text-white hover:text-pink-300"
                   }`}
               >
                 <SlUser size={20} />
               </div>
             ) : (
               // ✅ Đã login → hiện accountId
-              <div className="relative">
+              <div
+                className="relative"
+                onMouseEnter={() => setOpenDropdown(true)}
+                onMouseLeave={() => setOpenDropdown(false)}
+              >
                 <span
-                  onClick={() => setOpenDropdown(!openDropdown)}
                   className={`cursor-pointer font-medium transition-colors duration-200 ${isScrolled
                       ? "text-gray-700 hover:font-semibold"
                       : "text-white hover:font-semibold"
@@ -111,7 +114,7 @@ const Header = () => {
                 {openDropdown && (
                   <div
                     className="absolute right-0 mt-2 w-56 rounded-xl 
-                      backdrop-blur-md bg-gray-800/40 shadow-xl border border-gray-200/30"
+        backdrop-blur-md bg-gray-800/40 shadow-xl border border-gray-200/30"
                   >
                     <ul className="py-2 text-gray-100">
                       <Link to={"/profile"}>
@@ -119,7 +122,6 @@ const Header = () => {
                           Hồ sơ cá nhân
                         </li>
                       </Link>
-
                       <li className="px-4 py-2 hover:bg-gray-700/40 cursor-pointer">
                         Lịch sử mua hàng
                       </li>

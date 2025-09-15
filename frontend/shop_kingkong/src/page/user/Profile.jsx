@@ -15,7 +15,7 @@ const statusColors = {
 };
 
 const Profile = () => {
-  const { accountId } = useSelector((state) => state.auth.accountId);
+  const accountId  = useSelector((state) => state.auth.accountId);
   const dispatch = useDispatch();
 
   const account = useSelector(selectAccount);

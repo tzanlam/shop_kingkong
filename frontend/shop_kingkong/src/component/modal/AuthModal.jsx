@@ -96,7 +96,7 @@ const AuthModal = ({ open, onClose }) => {
                     loading={loading}
                     className="w-full rounded-xl font-semibold italic"
                   >
-                    Login
+                    Đăng nhập
                   </Button>
                 </Form>
               ),
@@ -157,7 +157,7 @@ const AuthModal = ({ open, onClose }) => {
                     loading={loading}
                     className="w-full rounded-xl font-semibold italic"
                   >
-                    Create account
+                    Đăng kí
                   </Button>
                 </Form>
               ),
@@ -174,13 +174,13 @@ const AuthModal = ({ open, onClose }) => {
             font-size: 1.1rem;
           }
           .custom-tabs .ant-tabs-tab:hover {
-            color: #111 !important; /* đen nhẹ */
+            color: #111 !important;
           }
           .custom-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
-            color: #111 !important; /* active tab màu đen */
+            color: #111 !important;
           }
           .custom-tabs .ant-tabs-ink-bar {
-            background: #111 !important; /* gạch chân active màu đen */
+            background: #111 !important;
           }
         `}
       </style>
