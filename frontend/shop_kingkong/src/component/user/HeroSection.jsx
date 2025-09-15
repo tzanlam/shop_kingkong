@@ -1,5 +1,5 @@
 import React from "react";
-import bag1 from "../assets/bag1.jpg";
+import bag1 from "../../assets/bag1.jpg";
 import { MdArrowForwardIos } from "react-icons/md";
 
 const HeroSection = () => {

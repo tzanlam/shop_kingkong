@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import menuItems from "../data/menuItems";
-import logoBag from "../assets/logoBag.png";
+import menuItems from "../../data/menuItems";
+import logoBag from "../../assets/logoBag.png";
 import { GrFavorite } from "react-icons/gr";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { SlUser } from "react-icons/sl";
-import AuthModal from "./AuthModal";
+import AuthModal from "../AuthModal";
 import { useSelector, useDispatch } from "react-redux";
-import { LOGOUT } from "../redux/slices/AuthSlice";
+import { LOGOUT } from "../../redux/slices/AuthSlice";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
