@@ -4,9 +4,10 @@ import logoBag from "../../assets/logoBag.png";
 import { GrFavorite } from "react-icons/gr";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { SlUser } from "react-icons/sl";
-import AuthModal from "../AuthModal";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../redux/slices/AuthSlice";
+import { Link } from "react-router-dom";
+import AuthModal from "../modal/AuthModal";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,9 +32,8 @@ const Header = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "bg-white shadow-lg" : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white shadow-lg" : "bg-transparent"
+          }`}
       >
         <div className="container px-8 py-6 mx-auto flex items-center justify-center relative">
           {/* Logo */}
@@ -51,11 +51,10 @@ const Header = () => {
               <a
                 key={item.label}
                 href={item.href}
-                className={`transition-colors duration-200 ${
-                  isScrolled
+                className={`transition-colors duration-200 ${isScrolled
                     ? "text-gray-600 hover:text-blue-600"
                     : "text-white hover:text-pink-300"
-                }`}
+                  }`}
               >
                 {item.label}
               </a>
@@ -66,22 +65,20 @@ const Header = () => {
           <div className="flex items-center absolute right-12 space-x-6">
             {/* Yêu thích */}
             <div
-              className={`cursor-pointer transition-colors duration-200 ${
-                isScrolled
+              className={`cursor-pointer transition-colors duration-200 ${isScrolled
                   ? "text-gray-600 hover:text-blue-600"
                   : "text-white hover:text-pink-300"
-              }`}
+                }`}
             >
               <GrFavorite size={22} />
             </div>
 
             {/* Giỏ hàng */}
             <div
-              className={`cursor-pointer transition-colors duration-200 ${
-                isScrolled
+              className={`cursor-pointer transition-colors duration-200 ${isScrolled
                   ? "text-gray-600 hover:text-blue-600"
                   : "text-white hover:text-pink-300"
-              }`}
+                }`}
             >
               <HiOutlineShoppingCart size={22} />
             </div>
@@ -91,11 +88,10 @@ const Header = () => {
               // ✅ Chưa login → hiện icon
               <div
                 onClick={() => setOpenAuth(true)}
-                className={`cursor-pointer transition-colors duration-200 ${
-                  isScrolled
+                className={`cursor-pointer transition-colors duration-200 ${isScrolled
                     ? "text-gray-600 hover:text-blue-600"
                     : "text-white hover:text-pink-300"
-                }`}
+                  }`}
               >
                 <SlUser size={20} />
               </div>
@@ -104,11 +100,10 @@ const Header = () => {
               <div className="relative">
                 <span
                   onClick={() => setOpenDropdown(!openDropdown)}
-                  className={`cursor-pointer font-medium transition-colors duration-200 ${
-                    isScrolled
+                  className={`cursor-pointer font-medium transition-colors duration-200 ${isScrolled
                       ? "text-gray-700 hover:font-semibold"
                       : "text-white hover:font-semibold"
-                  }`}
+                    }`}
                 >
                   Mã khách hàng: {accountId}
                 </span>
@@ -119,9 +114,12 @@ const Header = () => {
                       backdrop-blur-md bg-gray-800/40 shadow-xl border border-gray-200/30"
                   >
                     <ul className="py-2 text-gray-100">
-                      <li className="px-4 py-2 hover:bg-gray-700/40 cursor-pointer">
-                        Thông tin cá nhân
-                      </li>
+                      <Link to={"/profile"}>
+                        <li className="px-4 py-2 hover:bg-gray-700/40 cursor-pointer">
+                          Hồ sơ cá nhân
+                        </li>
+                      </Link>
+
                       <li className="px-4 py-2 hover:bg-gray-700/40 cursor-pointer">
                         Lịch sử mua hàng
                       </li>

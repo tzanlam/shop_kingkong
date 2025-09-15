@@ -4,27 +4,27 @@ const Category = () => {
   const bags = [
     {
       name: "Túi Casual",
-      image: "https://via.placeholder.com/300x400",
+      // image: "https://via.placeholder.com/300x400",
       size: "large",
     },
     {
       name: "Túi Văn Phòng",
-      image: "https://via.placeholder.com/300x300",
+      // image: "https://via.placeholder.com/300x300",
       size: "medium",
     },
     {
       name: "Túi Đa Hơi",
-      image: "https://via.placeholder.com/300x350",
+      // image: "https://via.placeholder.com/300x350",
       size: "medium",
     },
     {
       name: "Túi Sang Trọng",
-      image: "https://via.placeholder.com/300x300",
+      // image: "https://via.placeholder.com/300x300",
       size: "medium",
     },
     {
       name: "Túi Thiết Kế",
-      image: "https://via.placeholder.com/300x350",
+      // image: "https://via.placeholder.com/300x350",
       size: "medium",
     },
   ];

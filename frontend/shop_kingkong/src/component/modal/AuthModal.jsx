@@ -1,12 +1,12 @@
 import React from "react";
 import { Modal, Tabs, Form, Input, Button, message, ConfigProvider } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { LOGIN } from "../redux/slices/AuthSlice";
-import { REGISTER } from "../redux/slices/AccountSlice";
+import { LOGIN } from "../../redux/slices/AuthSlice";
+import { REGISTER } from "../../redux/slices/AccountSlice";
 import {
   selectAuthLoading,
   selectAuthError,
-} from "../redux/slices/AuthSlice";
+} from "../../redux/slices/AuthSlice";
 
 const { TabPane } = Tabs;
 
@@ -25,7 +25,7 @@ const AuthModal = ({ open, onClose }) => {
         onClose();
         message.success("Đăng nhập thành công!");
       })
-      .catch(() => {});
+      .catch(() => {error});
   };
 
   const handleRegister = (values) => {
