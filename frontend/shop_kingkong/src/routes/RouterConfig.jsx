@@ -3,6 +3,7 @@ import HomePage from "../page/user/HomePage";
 import ProductDetails from "../component/user/ProductDetails";
 import MainLayout from "../layout/MainLayout";
 import Profile from "../page/user/Profile";
+import VerificationPage from "../page/both/VerificationPage";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
         path: "/product/:id",
         element: <ProductDetails />,
       },
+      {
+        path: "/verify",
+        element: <VerificationPage />
+      }
     ],
   },
 ]);
