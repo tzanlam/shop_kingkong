@@ -107,13 +107,11 @@ public class JwtTokenUtil {
 
     public boolean validateToken(String token, UserDetails userDetails, boolean isRefreshToken) {
         final String username = getUsernameFromToken(token, isRefreshToken);
-        return (username.equals(userDetails.getUsername()) && isTokenExpired(token, isRefreshToken));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token, isRefreshToken));
     }
-
     public boolean isTokenValid(String token, boolean isRefreshToken) {
         try {
-            getClaimsFromToken(token, isRefreshToken);
-            return isTokenExpired(token, isRefreshToken);
+            return !isTokenExpired(token, isRefreshToken);
         } catch (Exception e) {
             return false;
         }
