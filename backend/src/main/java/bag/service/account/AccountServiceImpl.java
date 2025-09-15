@@ -63,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
         );
         request.changePassword(account);
         accountRepository.save(account);
+        verificationService.createAndSendVerificationEmail(request.getEmail(), "CHANGE_PASSWORD");
         return new AccountDto(account);
     }
 
