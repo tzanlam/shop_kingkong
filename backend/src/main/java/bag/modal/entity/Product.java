@@ -34,11 +34,5 @@ public class Product extends Time{
     @JoinColumn
     private Category category;
 
-    @OneToMany(mappedBy = "product")
-    private List<Review> reviews;
-
-    @ManyToOne
-    @JoinColumn
-    private Cart cart;
 
 }

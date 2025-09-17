@@ -6,8 +6,6 @@ import bag.modal.entity.ProductImage;
 import bag.modal.entity.Review;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class ProductRequest {
     private String name;
@@ -18,8 +16,7 @@ public class ProductRequest {
     private Category category;
     private Review review;
 
-    public void createProduct(){
-        Product product = new Product();
+    public void setProduct(Product product){
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
