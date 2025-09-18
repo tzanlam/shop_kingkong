@@ -4,7 +4,7 @@ const AboutSection = () => {
   const descriptions = [
     "bagShop ra đời với khát khao mang đến những chiếc túi xa hoa, tinh tế được chế tác bằng tay tài hoa của những nghệ nhân Việt Nam với tình yêu và sự tỉ mỉ đến từng chi tiết nhỏ.",
     "Chúng tôi không chỉ đơn thuần là một thương hiệu túi xách mà còn là cầu chuyển về sự sang trọng truyền thống kết hợp với thiết kế hiện đại, sang trọng và đẳng cấp quốc tế.",
-    "Mỗi sản phẩm của chúng tôi đều chứa đựng hơn cả của nghệ thuật chế tác, tinh thần Việt Nam và khát vọng mang đến trải nghiệm thời trang đích thực cho khách hàng."
+    "Mỗi sản phẩm của chúng tôi đều chứa đựng hơn cả của nghệ thuật chế tác, tinh thần Việt Nam và khát vọng mang đến trải nghiệm thời trang đích thực cho khách hàng.",
   ];
 
   return (
@@ -13,7 +13,7 @@ const AboutSection = () => {
         <div className="flex items-start justify-between gap-16">
           {/* Left Content - Title */}
           <div className="flex-1">
-            <h1 className="text-5xl md:text-6xl lg:text-6xl text-gray-900 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl text-gray-700 ">
               Khám Phá Nghệ Thuật Túi Xách Việt Nam Đích Thực
             </h1>
           </div>

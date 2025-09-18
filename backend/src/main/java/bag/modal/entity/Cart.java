@@ -18,9 +18,6 @@ public class Cart {
     @JoinColumn
     private Account account;
 
-    @OneToMany(mappedBy = "cart")
-    private List<Product> products;
-
     @Column
     private int quantity;
 
