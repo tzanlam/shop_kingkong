@@ -59,19 +59,33 @@ const Header = () => {
           </div>
 
           <nav className="flex space-x-12">
-            {menuItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className={`transition-colors duration-200 ${
-                  isScrolled
-                    ? "text-gray-600 hover:text-blue-600"
-                    : "text-white hover:text-pink-300"
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
+            {menuItems.map((item) =>
+              item.href.startsWith("#") ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={`transition-colors duration-200 ${
+                    isScrolled
+                      ? "text-gray-600 hover:text-blue-600"
+                      : "text-white hover:text-pink-300"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className={`transition-colors duration-200 ${
+                    isScrolled
+                      ? "text-gray-600 hover:text-blue-600"
+                      : "text-white hover:text-pink-300"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </nav>
 
           <div className="flex items-center absolute right-12 space-x-6">

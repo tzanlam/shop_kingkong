@@ -1,19 +1,19 @@
 const menuItems = [
   {
     label: "Trang chủ",
-    href: "#",
+    href: "/",
   },
   {
     label: "Sản phẩm",
-    href: "#",
+    href: "/product",
   },
   {
     label: "Giới thiệu",
-    href: "#",
+    href: "#about",
   },
   {
     label: "Liên hệ",
-    href: "#",
+    href: "#contact",
   },
 ];
 export default menuItems;

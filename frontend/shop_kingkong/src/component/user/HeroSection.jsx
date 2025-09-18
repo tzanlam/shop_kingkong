@@ -1,8 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import bag1 from "../../assets/bag1.jpg";
 import { MdArrowForwardIos } from "react-icons/md";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
+  const handleShopNow = () => {
+    navigate("/product");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900">
       <div className="container mx-auto px-20 pt-24 pb-20">
@@ -18,7 +25,10 @@ const HeroSection = () => {
               THẾ GIỚI, MANG ĐẾN PHONG CÁCH VÀ ĐẲNG CẤP CHO MỌI QUÝ PHÁI.
             </p>
 
-            <button className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 flex items-center gap-2">
+            <button
+              onClick={handleShopNow}
+              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-gray-900 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+            >
               Mua Ngay
               <MdArrowForwardIos />
             </button>
