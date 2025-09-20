@@ -6,13 +6,14 @@ import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { SlUser } from "react-icons/sl";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../redux/slices/AuthSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "../modal/AuthModal";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openAuth, setOpenAuth] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const navigate = useNavigate();
   const timeoutRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -100,6 +101,7 @@ const Header = () => {
             </div>
 
             <div
+              onClick={() => navigate("/cart")}
               className={`cursor-pointer transition-colors duration-200 ${
                 isScrolled
                   ? "text-gray-600 hover:text-blue-600"

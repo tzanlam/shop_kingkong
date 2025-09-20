@@ -12,6 +12,7 @@ const Product = () => {
   const [sortBy, setSortBy] = useState("default");
   const [favorites, setFavorites] = useState([]);
   const [selectOption, setSelectOption] = useState([]);
+  const [addToCart, setAddToCart] = useState([]);
 
   const toggleFavorite = (productId) => {
     setFavorites((prev) =>
@@ -27,6 +28,16 @@ const Product = () => {
       [productId]: {
         ...prev[productId],
         [type]: value,
+      },
+    }));
+  };
+
+  const handleAddToCart = () => {
+    setAddToCart((prev) => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        quantity: prev[productId] ? prev[productId].quantity + 1 : 1,
       },
     }));
   };
@@ -210,7 +221,7 @@ const Product = () => {
                     ))}
                   </div>
                 </div>
-                <p className="text-lg font-bold text-black-600 mt-2">
+                <p className="text-lg font-bold text-purple-600 mt-2">
                   {product.price} VNĐ
                 </p>
               </div>

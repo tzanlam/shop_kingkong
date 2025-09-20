@@ -30,6 +30,10 @@ const router = createBrowserRouter([
         path: "/verify",
         element: <VerificationPage />,
       },
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
     ],
   },
 ]);
