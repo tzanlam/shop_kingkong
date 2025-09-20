@@ -1,5 +1,7 @@
 package bag.service.verification;
 
+import bag.modal.entity.Account;
+import bag.repository.AccountRepository;
 import bag.service.mail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,6 +15,7 @@ import java.util.Random;
 public class VerificationService {
     private final RedisTemplate<String, String> redisTemplate;
     private final EmailService emailService;
+    private final AccountRepository accountRepository;
 
     private String generateOtp(){
         return String.valueOf(new Random().nextInt(90000)+10000);
@@ -37,6 +40,12 @@ public class VerificationService {
             return false;
         }
         redisTemplate.delete(key);
+
+        Account account = accountRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("Account not found")
+        );
+        account.setStatus(Account.AccountStatus.ACTIVE);
+        accountRepository.save(account);
         return true;
     }
 }

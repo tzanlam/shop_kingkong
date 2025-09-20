@@ -49,11 +49,13 @@ public class AccountRequest {
 
     public void changeEmail(Account account){
         account.setEmail(email);
+        account.setStatus(Account.AccountStatus.INACTIVE);
     }
 
     public void changePassword(Account account){
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         account.setPassword(passwordEncoder.encode(password));
+        account.setStatus(Account.AccountStatus.INACTIVE);
     }
 
     public void updateInformation(Account account){
@@ -61,6 +63,7 @@ public class AccountRequest {
         account.setPhoneNumber(phoneNumber);
         account.setCity(city);
         account.setAddress(address);
+        account.setStatus(Account.AccountStatus.INACTIVE);
     }
 
     public void deleteAccount(Account account){

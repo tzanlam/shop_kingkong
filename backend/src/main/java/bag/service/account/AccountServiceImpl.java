@@ -5,6 +5,7 @@ import bag.modal.entity.Account;
 import bag.modal.request.AccountRequest;
 import bag.repository.AccountRepository;
 import bag.service.verification.VerificationService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public AccountDto updateInformation(AccountRequest request, int accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new RuntimeException("Account not found")
@@ -57,6 +59,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public AccountDto changePassword(AccountRequest request, int accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new RuntimeException("Account not found")
@@ -68,6 +71,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public AccountDto changeEmail(AccountRequest request, int accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new RuntimeException("Account not found")
