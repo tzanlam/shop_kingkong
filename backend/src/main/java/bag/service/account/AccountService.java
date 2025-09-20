@@ -11,7 +11,7 @@ public interface AccountService {
     AccountDto addUser(AccountRequest request);
     AccountDto addAdmin(AccountRequest request);
     AccountDto updateInformation(AccountRequest request, int accountId);
-    AccountDto changePassword(AccountRequest request, int accountId);
-    AccountDto changeEmail(AccountRequest request, int accountId);
+    void changePassword(String newPassword, int accountId);
+    void changeEmail(String newEmail, int accountId);
     AccountDto deleteAccount(int accountId, AccountRequest request);
 }

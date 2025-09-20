@@ -5,10 +5,12 @@ import bag.modal.entity.Account;
 import bag.modal.request.AccountRequest;
 import bag.repository.AccountRepository;
 import bag.service.verification.VerificationService;
-import jakarta.transaction.Transactional;
+import bag.support.method.Support;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final VerificationService verificationService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public List<AccountDto> getAll() {
@@ -48,7 +51,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
     public AccountDto updateInformation(AccountRequest request, int accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new RuntimeException("Account not found")
@@ -59,27 +61,28 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
-    public AccountDto changePassword(AccountRequest request, int accountId) {
+    public void changePassword(String newPassword, int accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new RuntimeException("Account not found")
         );
-        request.changePassword(account);
-        accountRepository.save(account);
-        verificationService.createAndSendVerificationEmail(request.getEmail(), "CHANGE_PASSWORD");
-        return new AccountDto(account);
+        verificationService.createAndSendVerificationEmail(account.getEmail(), "CHANGE_PASSWORD");
+        String key = Support.buildKey(account.getEmail(), "CHANGE_PASSWORD");
+        redisTemplate.opsForHash().put(key, "accountId", String.valueOf(accountId));
+        redisTemplate.opsForHash().put(key, "newPassword", newPassword);
+        redisTemplate.expire(key, Duration.ofMinutes(5));
+
     }
 
     @Override
-    @Transactional
-    public AccountDto changeEmail(AccountRequest request, int accountId) {
+    public void changeEmail(String newEmail, int accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(
                 () -> new RuntimeException("Account not found")
         );
-        request.changeEmail(account);
-        accountRepository.save(account);
-        verificationService.createAndSendVerificationEmail(request.getEmail(), "CHANGE EMAIL");
-        return new AccountDto(account);
+        verificationService.createAndSendVerificationEmail(newEmail, "CHANGE_EMAIL");
+        String key = Support.buildKey(account.getEmail(), "CHANGE_EMAIL");
+        redisTemplate.opsForHash().put(key, "accountId", String.valueOf(accountId));
+        redisTemplate.opsForHash().put(key, "newEmail", newEmail);
+        redisTemplate.expire(key, Duration.ofMinutes(5));
     }
 
     @Override

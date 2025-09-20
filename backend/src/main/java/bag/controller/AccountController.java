@@ -55,9 +55,10 @@ public class AccountController {
 
     @PutMapping("/email/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<?> updateEmail(@RequestBody AccountRequest request, @PathVariable int id){
+    public ResponseEntity<?> updateEmail(@RequestBody String email, @PathVariable int id){
         try{
-            return ResponseEntity.ok(accountService.changeEmail(request,id));
+            accountService.changeEmail(email, id);
+            return ResponseEntity.ok("otp send your email. pls check");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -65,9 +66,10 @@ public class AccountController {
 
     @PutMapping("/password/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ResponseEntity<?> updatePassword(@RequestBody AccountRequest request, @PathVariable int id){
+    public ResponseEntity<?> updatePassword(@RequestBody String password, @PathVariable int id){
         try{
-            return ResponseEntity.ok(accountService.changePassword(request,id));
+            accountService.changePassword(password, id);
+            return ResponseEntity.ok("otp send your password. pls check");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

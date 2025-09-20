@@ -47,17 +47,6 @@ public class AccountRequest {
         account.setAddress(null);
     }
 
-    public void changeEmail(Account account){
-        account.setEmail(email);
-        account.setStatus(Account.AccountStatus.INACTIVE);
-    }
-
-    public void changePassword(Account account){
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        account.setPassword(passwordEncoder.encode(password));
-        account.setStatus(Account.AccountStatus.INACTIVE);
-    }
-
     public void updateInformation(Account account){
         account.setUsername(username);
         account.setPhoneNumber(phoneNumber);
