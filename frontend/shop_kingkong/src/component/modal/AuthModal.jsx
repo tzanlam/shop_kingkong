@@ -1,17 +1,14 @@
 import React from "react";
 import { Modal, Tabs, Form, Input, Button, message, ConfigProvider } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { LOGIN } from "../../redux/slices/AuthSlice";
+import { useNavigate } from "react-router-dom";
+import { LOGIN, selectAuthLoading, selectAuthError } from "../../redux/slices/AuthSlice";
 import { REGISTER } from "../../redux/slices/AccountSlice";
-import {
-  selectAuthLoading,
-  selectAuthError,
-} from "../../redux/slices/AuthSlice";
-
-const { TabPane } = Tabs;
 
 const AuthModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const loading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
 
@@ -22,20 +19,28 @@ const AuthModal = ({ open, onClose }) => {
     dispatch(LOGIN(values))
       .unwrap()
       .then(() => {
-        onClose();
+        onClose?.();
         message.success("Đăng nhập thành công!");
       })
-      .catch(() => {error});
+      .catch((err) => {
+        message.error(err?.message || error || "Đăng nhập thất bại!");
+      });
   };
 
   const handleRegister = (values) => {
     dispatch(REGISTER(values))
       .unwrap()
-      .then(() => {
-        onClose();
-        message.success("Đăng ký thành công!");
+      // eslint-disable-next-line no-unused-vars
+      .then((res) => {
+        onClose?.();
+        message.success("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
+        // Truyền kèm email/action sang trang verify (tuỳ bạn dùng)
+        navigate("/verify", { state: { email: values.email, action: "REGISTER" } });
       })
-      .catch(() => {});
+      .catch((err) => {
+        // Hiển thị lỗi trả về từ API
+        message.error(err?.message || "Đăng ký thất bại! Vui lòng thử lại.");
+      });
   };
 
   return (
@@ -47,24 +52,14 @@ const AuthModal = ({ open, onClose }) => {
         },
       }}
     >
-      <Modal
-        open={open}
-        onCancel={onClose}
-        footer={null}
-        centered
-        className="rounded-2xl"
-      >
+      <Modal open={open} onCancel={onClose} footer={null} centered className="rounded-2xl">
         <Tabs
           defaultActiveKey="login"
           centered
           className="custom-tabs"
           items={[
             {
-              label: (
-                <span className="font-semibold italic text-lg hover:text-gray-800">
-                  Đăng nhập
-                </span>
-              ),
+              label: <span className="font-semibold italic text-lg hover:text-gray-800">Đăng nhập</span>,
               key: "login",
               children: (
                 <Form
@@ -102,11 +97,7 @@ const AuthModal = ({ open, onClose }) => {
               ),
             },
             {
-              label: (
-                <span className="font-semibold italic text-lg hover:text-gray-800">
-                  Đăng ký
-                </span>
-              ),
+              label: <span className="font-semibold italic text-lg hover:text-gray-800">Đăng ký</span>,
               key: "register",
               children: (
                 <Form
@@ -136,7 +127,7 @@ const AuthModal = ({ open, onClose }) => {
                   </Form.Item>
 
                   <Form.Item
-                    name="phone"
+                    name="phoneNumber"
                     label={<span className="font-medium italic">Số điện thoại</span>}
                     rules={[{ required: true, message: "Nhập số điện thoại!" }]}
                   >
