@@ -39,9 +39,6 @@ public class Account extends Time{
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
 
-    @Column
-    private String confirmCode;
-
     public enum Position {
         USER, ADMIN
     }
