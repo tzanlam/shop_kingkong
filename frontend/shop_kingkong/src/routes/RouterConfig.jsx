@@ -5,6 +5,7 @@ import MainLayout from "../layout/MainLayout";
 import Profile from "../page/user/Profile";
 import VerificationPage from "../page/both/VerificationPage";
 import Product from "../component/user/Product";
+import Cart from "../component/user/Cart";
 
 const router = createBrowserRouter([
   {

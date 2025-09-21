@@ -13,9 +13,19 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <RouterProvider router={router} />
       </PersistGate>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer
+        position="top-center" // Đặt ở giữa phía trên
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </Provider>
-
   );
 }
 

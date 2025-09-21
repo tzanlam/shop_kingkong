@@ -101,14 +101,15 @@ const Header = () => {
             </div>
 
             <div
-              onClick={() => navigate("/cart")}
               className={`cursor-pointer transition-colors duration-200 ${
                 isScrolled
                   ? "text-gray-600 hover:text-blue-600"
                   : "text-white hover:text-pink-300"
               }`}
             >
-              <HiOutlineShoppingCart size={22} />
+              <Link to="/cart">
+                <HiOutlineShoppingCart size={22} />
+              </Link>
             </div>
 
             {!accountId ? (

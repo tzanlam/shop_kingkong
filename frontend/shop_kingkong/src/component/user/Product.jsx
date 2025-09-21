@@ -7,6 +7,7 @@ import {
 } from "react-icons/md";
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Product = () => {
   const [sortBy, setSortBy] = useState("default");
@@ -32,7 +33,7 @@ const Product = () => {
     }));
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (productId) => {
     setAddToCart((prev) => ({
       ...prev,
       [productId]: {
@@ -40,6 +41,15 @@ const Product = () => {
         quantity: prev[productId] ? prev[productId].quantity + 1 : 1,
       },
     }));
+    toast.success("Thêm vào giỏ hàng thành công!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
   };
 
   const products = [
@@ -221,12 +231,15 @@ const Product = () => {
                     ))}
                   </div>
                 </div>
-                <p className="text-lg font-bold text-purple-600 mt-2">
+                <p className="text-lg font-bold text-gray-800 mt-2">
                   {product.price} VNĐ
                 </p>
               </div>
               {/* Add to Cart Button - Appears on Hover */}
-              <button className="absolute bottom-0 left-0 right-0 bg-purple-600 text-white py-2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-700">
+              <button
+                onClick={() => handleAddToCart(product.id)}
+                className="absolute bottom-0 left-0 right-0 bg-blue-600 text-white py-2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity "
+              >
                 <HiOutlineShoppingCart size={20} />
                 Thêm vào giỏ
               </button>
