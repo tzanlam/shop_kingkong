@@ -6,6 +6,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,8 @@ public class EmailServiceImpl implements EmailService {
     private String adminMail;
 
     private String loadTemplate() {
-        try (InputStream inputStream = getClass().getResourceAsStream("/templates/email-template.html")) {
-            assert inputStream != null;
+        ClassPathResource classPathResource = new ClassPathResource("templates/emailTemplate.html");
+        try (InputStream inputStream = classPathResource.getInputStream()) {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException("Không thể load template email", e);

@@ -64,8 +64,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 // auth
-                                "/auth/login"
-                                ,
+                                "/auth/login",
+                                "/auth/logout/{accountId}",
+
+                                // verify
+                                "/verify",
+
                                 // account
                                 "/account/register"
                         ).permitAll()

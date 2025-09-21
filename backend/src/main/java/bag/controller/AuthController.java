@@ -56,17 +56,16 @@ public class AuthController {
     }
 
     @PostMapping("/logout/{accountId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<?> logout(@PathVariable int accountId){
         authService.logout(accountId);
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false) // false = localhost, true = deploy
                 .path("/")
                 .maxAge(0)
                 .sameSite("Strict")
                 .build();
-        return ResponseEntity.noContent()
+        return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
     }

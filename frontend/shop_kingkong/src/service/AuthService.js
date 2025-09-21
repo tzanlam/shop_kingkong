@@ -1,4 +1,3 @@
-import axiosClient from "./AxiosConfig";
 import axios from "axios";
 
 const axiosRaw = axios.create({
@@ -12,7 +11,7 @@ const AuthService = {
     return axiosRaw.post("auth/login", loginRequest);
   },
   logout(accountId) {
-    return axiosClient.post(`auth/logout/${accountId}`);
+    return axiosRaw.post(`auth/logout/${accountId}`);
   },
   refresh() {
     return axiosRaw.post("auth/refresh");

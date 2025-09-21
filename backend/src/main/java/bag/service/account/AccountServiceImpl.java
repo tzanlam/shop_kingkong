@@ -39,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = request.register();
         accountRepository.save(account);
         verificationService.createAndSendVerificationEmail(request.getEmail(), "REGISTER");
-        return null;
+        return new AccountDto(account);
     }
 
     @Override
