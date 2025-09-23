@@ -1,14 +1,14 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storageSession from "redux-persist/lib/storage/session";
 import { persistReducer, persistStore } from "redux-persist";
-  
+
 import authReducer from "./slices/AuthSlice";
 import accountReducer from "./slices/AccountSlice";
 
 const persistConfig = {
   key: "root",
   storage: storageSession,
-  whitelist: ["auth"], 
+  whitelist: ["auth"],
 };
 
 const rootReducer = combineReducers({

@@ -11,7 +11,6 @@ const Cart = () => {
     return parseInt(priceString.toString().replace(/,/g, "")) || 0;
   };
 
-  // Sửa hàm totalPrice để sử dụng quantity từ state
   const totalPrice = (product) => parsePrice(product.price) * quantity;
   const handleQuantityChange = (change) => {
     setQuantity((prev) => Math.max(1, prev + change));
