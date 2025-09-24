@@ -15,16 +15,16 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
-    @Value("${jwt.access-token}")
+    @Value("${app.jwt.access-token}")
     private String accessTokenSecret;
 
-    @Value("${jwt.refresh-token}")
+    @Value("${app.jwt.refresh-token}")
     private String refreshTokenSecret;
 
-    @Value("${jwt.access-expiration}")
+    @Value("${app.jwt.access-exp-seconds}")
     private Long accessTokenExpiration;
 
-    @Value("${jwt.refresh-expiration}")
+    @Value("${app.jwt.refresh-exp-seconds}")
     private Long refreshTokenExpiration;
 
     @PostConstruct

@@ -20,9 +20,6 @@ import java.time.Year;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
 
-    @Value("${my.app}")
-    private String appName;
-
     @Value("${spring.mail.host}")
     private String adminMail;
 
@@ -40,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
         return template
                 .replace("{{title}}", title)
                 .replace("{{content}}", dynamicContent)
-                .replace("{{appName}}", appName)
+                .replace("{{appName}}", "Bag Shop")
                 .replace("{{year}}", String.valueOf(Year.now().getValue()));
     }
 

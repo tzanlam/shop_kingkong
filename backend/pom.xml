@@ -30,7 +30,14 @@
 		<java.version>21</java.version>
 	</properties>
 	<dependencies>
-<!--		Redis Dependency-->
+<!--		dotenv config-->
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
+		<!--		Redis Dependency-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
@@ -136,6 +143,40 @@
 
 	<build>
 		<plugins>
+
+			<!-- Biên dịch Java 21 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<release>21</release>
+				</configuration>
+			</plugin>
+
+			<!-- Chạy unit test (JDK 21 thân thiện) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.3</version>
+				<configuration>
+					<useModulePath>false</useModulePath>
+					<!-- Nếu dùng Mockito/ByteBuddy cũ, mở các module: -->
+					<argLine>
+						--add-opens java.base/java.lang=ALL-UNNAMED
+						--add-opens java.base/java.lang.invoke=ALL-UNNAMED
+						--add-opens java.base/java.lang.reflect=ALL-UNNAMED
+						--add-opens java.base/java.io=ALL-UNNAMED
+						--add-opens java.base/java.net=ALL-UNNAMED
+					</argLine>
+					<!-- Dùng profile test khi chạy mvn test -->
+					<systemPropertyVariables>
+						<spring.profiles.active>test</spring.profiles.active>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+
+			<!-- Spring Boot plugin của bạn giữ nguyên -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -148,6 +189,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
