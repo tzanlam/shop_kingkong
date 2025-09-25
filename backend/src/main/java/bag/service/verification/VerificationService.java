@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,40 +28,61 @@ public class VerificationService {
         return String.valueOf(new Random().nextInt(90000)+10000);
     }
 
-    public void createAndSendVerificationEmail(String email, String action){
+    public void createAndSendVerificationEmail(String email, String action) {
+        createAndSendVerificationEmail(email, action, Collections.emptyMap());
+    }
+
+    public void createAndSendVerificationEmail(String email, String action, Map<String, String> extras) {
         String code = generateOtp();
-        String key = buildKey(email, action);
-        redisTemplate.opsForValue().set(key, code, Duration.ofMinutes(5));
+        String key  = buildKey(email, action);
+        Map<String, String> data = new HashMap<>();
+        data.put("otp", code);
+        data.putAll(extras);
+        redisTemplate.opsForHash().putAll(key, data);
+        redisTemplate.expire(key, Duration.ofMinutes(5));
         emailService.sendVerificationCode(email, code, action);
     }
     public boolean verifyOtp(String email, String otp, String action) {
         String otpKey = buildKey(email, action);
-        String storedOtp = redisTemplate.opsForValue().get(otpKey);
+        Map<Object, Object> tempData = redisTemplate.opsForHash().entries(otpKey);
+        if (tempData == null || tempData.isEmpty()) {
+            return false;
+        }
 
+        String storedOtp = (String) tempData.get("otp");
         if (storedOtp == null || !storedOtp.equals(otp)) {
             return false;
         }
-
-        Map<Object, Object> tempData = redisTemplate.opsForHash().entries(otpKey);
         redisTemplate.delete(otpKey);
-
-        if (tempData.isEmpty()) {
-            return false;
+        Account account;
+        String accountIdStr = (String) tempData.get("accountId");
+        if (accountIdStr != null && !accountIdStr.isBlank()) {
+            int accountId = Integer.parseInt(accountIdStr);
+            account = accountRepository.findById(accountId)
+                    .orElseThrow(() -> new RuntimeException("Account not found"));
+        } else {
+            account = accountRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Account not found by email"));
         }
-
-        int accountId = Integer.parseInt((String) tempData.get("accountId"));
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        if ("CHANGE_EMAIL".equals(action)) {
-            String newEmail = (String) tempData.get("newEmail");
-            account.setEmail(newEmail);
-        } else if ("CHANGE_PASSWORD".equals(action)) {
-            String newPassword = (String) tempData.get("newPassword");
-            account.setPassword(passwordEncoder.encode(newPassword));
+        switch (action) {
+            case "REGISTER" -> {
+                account.setStatus(Account.AccountStatus.ACTIVE);
+            }
+            case "CHANGE_EMAIL" -> {
+                String newEmail = (String) tempData.get("newEmail");
+                if (newEmail == null || newEmail.isBlank()) return false;
+                account.setEmail(newEmail);
+            }
+            case "CHANGE_PASSWORD" -> {
+                String newPassword = (String) tempData.get("newPassword");
+                if (newPassword == null || newPassword.isBlank()) return false;
+                account.setPassword(passwordEncoder.encode(newPassword));
+            }
+            default -> throw new IllegalArgumentException("Unsupported action: " + action);
         }
 
         accountRepository.save(account);
         return true;
     }
+
 }
