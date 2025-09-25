@@ -4,14 +4,20 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { clearSupportSlice, RESENT_OTP, VERIFY } from "../../redux/slices/SupportSlice";
 
+const OTP_LENGTH = 5;
+
 const VerificationPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, success } = useSelector((state) => state.support);
+
+  const support = useSelector((s) => s.support ?? { loading:false, error:null, success:false });
+  const { loading, error, success } = support;
+
   const email = state?.email;
   const action = state?.action || "CHANGE_PASSWORD";
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
+
+  const [code, setCode] = useState(Array(OTP_LENGTH).fill(""));
   const [timeLeft, setTimeLeft] = useState(120);
   const inputs = useRef([]);
 
@@ -30,36 +36,36 @@ const VerificationPage = () => {
 
   const handleInput = useCallback((index, value) => {
     if (!/^\d?$/.test(value)) return;
-    const newCode = [...code];
-    newCode[index] = value;
-    setCode(newCode);
-    if (value && index < 5) inputs.current[index + 1].focus();
+    const next = [...code];
+    next[index] = value;
+    setCode(next);
+    if (value && index < OTP_LENGTH - 1) inputs.current[index + 1]?.focus();
   }, [code]);
 
   const handleKeyDown = useCallback((index, e) => {
     if (e.key === "Backspace" && !code[index] && index > 0) {
-      inputs.current[index - 1].focus();
+      inputs.current[index - 1]?.focus();
     }
   }, [code]);
 
   const handlePaste = useCallback((e) => {
-    const paste = e.clipboardData.getData("text").slice(0, 6).split("");
-    if (paste.every((char) => /^\d$/.test(char))) {
-      setCode(paste.concat(Array(6 - paste.length).fill("")));
-      inputs.current[5].focus();
+    const pasted = e.clipboardData.getData("text").slice(0, OTP_LENGTH).split("");
+    if (pasted.every((c) => /^\d$/.test(c))) {
+      setCode(pasted.concat(Array(OTP_LENGTH - pasted.length).fill("")));
+      inputs.current[OTP_LENGTH - 1]?.focus();
     }
   }, []);
 
   const submitCode = useCallback(() => {
-    if (code.every((digit) => digit !== "")) {
+    if (code.every((d) => d !== "")) {
       dispatch(VERIFY({ email, otp: code.join(""), action }));
     }
   }, [code, dispatch, email, action]);
 
-  const handleResend = useCallback(async () => {
+  const handleResend = useCallback(() => {
     dispatch(RESENT_OTP({ email, action }));
     message.success("Đã gửi lại mã OTP");
-    setCode(["", "", "", "", "", ""]);
+    setCode(Array(OTP_LENGTH).fill(""));
     setTimeLeft(120);
     inputs.current[0]?.focus();
   }, [dispatch, email, action]);
@@ -70,15 +76,11 @@ const VerificationPage = () => {
       message.success("Bạn đã xác thực thành công");
       navigate(action === "REGISTER" ? "/dashboard" : action === "CHANGE_EMAIL" ? "/profile" : "/");
     } else if (error) {
-      message.error(error.message || "Mã không hợp lệ");
-      setCode(["", "", "", "", "", ""]);
+      message.error(error?.message || "Mã không hợp lệ");
+      setCode(Array(OTP_LENGTH).fill(""));
       inputs.current[0]?.focus();
     }
   }, [success, error, action, dispatch, navigate]);
-
-  useEffect(() => {
-    submitCode();
-  }, [submitCode]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -90,12 +92,13 @@ const VerificationPage = () => {
         <p className="text-center text-sm text-gray-500 mb-6">
           Hành động: {action.replace("_", " ").toLowerCase()}
         </p>
+
         <div className="flex justify-center gap-2 mb-6" onPaste={handlePaste}>
           {code.map((digit, index) => (
             <input
               key={index}
               type="text"
-              maxLength="1"
+              maxLength={1}
               value={digit}
               onChange={(e) => handleInput(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
@@ -105,6 +108,7 @@ const VerificationPage = () => {
             />
           ))}
         </div>
+
         <div className="text-center mb-4">
           {timeLeft > 0 ? (
             <p className="text-gray-600">
@@ -115,7 +119,9 @@ const VerificationPage = () => {
             <p className="text-red-500">Mã OTP đã hết hạn</p>
           )}
         </div>
+
         {loading && <p className="text-blue-500 text-center mb-4">Đang xác nhận...</p>}
+
         <div className="flex justify-between gap-4">
           <button
             onClick={handleResend}
@@ -126,7 +132,7 @@ const VerificationPage = () => {
           </button>
           <button
             onClick={submitCode}
-            disabled={loading || code.some((digit) => digit === "")}
+            disabled={loading || code.some((d) => d === "")}
             className="flex-1 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all disabled:opacity-50"
           >
             Xác nhận
