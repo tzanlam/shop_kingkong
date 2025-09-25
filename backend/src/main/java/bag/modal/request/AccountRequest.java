@@ -25,7 +25,7 @@ public class AccountRequest {
         Account account = new Account();
         populate(account);
         account.setPosition(Account.Position.USER);
-        account.setStatus(Account.AccountStatus.INACTIVE);
+        account.setStatus(Account.AccountStatus.NOT_VERIFIED);
         return account;
     }
 

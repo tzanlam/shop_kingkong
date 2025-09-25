@@ -44,6 +44,6 @@ public class Account extends Time{
     }
 
     public enum AccountStatus {
-        ACTIVE, INACTIVE, DELETED
+        ACTIVE, INACTIVE, DELETED, NOT_VERIFIED
     }
 }
