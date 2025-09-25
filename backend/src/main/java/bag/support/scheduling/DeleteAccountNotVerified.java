@@ -1,5 +1,6 @@
 package bag.support.scheduling;
 
+import bag.modal.entity.Account;
 import bag.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Slf4j
 @Service
@@ -20,11 +22,16 @@ public class DeleteAccountNotVerified {
     @Value("${app.account.verification-ttl}")
     private Duration duration;
 
-    @Scheduled
-    @Transactional
-    public void deleteAccount() {
-        LocalDateTime cutoff = LocalDateTime.now().minus(duration);
-        long deleted = accountRepository.deleteIfAccountNotVerified(cutoff);
-        log.info("Deleted {} unverified accounts created before {}", deleted, cutoff);
-    }
+        @Scheduled(cron = "0 0 3 * * *", zone = "Asia/Ho_Chi_Minh")
+        @Transactional
+        public void run() {
+            ZoneId zone = ZoneId.of("Asia/Ho_Chi_Minh");
+            LocalDateTime nowVN = LocalDateTime.now(zone);
+            LocalDateTime cutoff = nowVN.minus(duration);
+
+            long deleted = accountRepository.deleteByStatusAndCreatedDateBefore(
+                    Account.AccountStatus.NOT_VERIFIED, cutoff
+            );
+            log.info("Deleted {} NOT_VERIFIED accounts created before {} (VN time)", deleted, cutoff);
+        }
 }
