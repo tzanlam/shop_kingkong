@@ -69,4 +69,13 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
     }
+
+    @PostMapping("/resent")
+    public ResponseEntity<?> ressent(@RequestParam("email") String email){
+        try{
+            return ResponseEntity.ok(authService.resentOtp(email));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

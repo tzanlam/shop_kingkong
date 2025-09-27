@@ -66,6 +66,7 @@ public class SecurityConfig {
                                 // auth
                                 "/auth/login",
                                 "/auth/logout/{accountId}",
+                                "/auth/resent",
 
                                 // verify
                                 "/verify",
