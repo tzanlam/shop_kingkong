@@ -71,9 +71,9 @@ public class AuthController {
     }
 
     @PostMapping("/resent")
-    public ResponseEntity<?> ressent(@RequestParam("email") String email){
+    public ResponseEntity<?> resent(@RequestParam("email") String email, @RequestParam("action") String action){
         try{
-            return ResponseEntity.ok(authService.resentOtp(email));
+            return ResponseEntity.ok(authService.resentOtp(email, action));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -1,5 +1,6 @@
 package bag.controller;
 
+import bag.modal.request.VerifiedRequest;
 import bag.service.verification.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,9 @@ public class VerificationController {
     private final VerificationService verificationService;
 
     @PostMapping
-    public ResponseEntity<?> verify(@RequestParam("email") String email, @RequestParam("otp") String otp, @RequestParam("action") String action) {
+    public ResponseEntity<?> verify(@RequestBody VerifiedRequest request) {
         try {
-            return ResponseEntity.ok(verificationService.verifyOtp(email, otp, action));
+            return ResponseEntity.ok(verificationService.verifyOtp(request));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

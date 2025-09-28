@@ -1,6 +1,7 @@
 package bag.service.verification;
 
 import bag.modal.entity.Account;
+import bag.modal.request.VerifiedRequest;
 import bag.repository.AccountRepository;
 import bag.service.mail.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -42,15 +43,15 @@ public class VerificationService {
         redisTemplate.expire(key, Duration.ofMinutes(5));
         emailService.sendVerificationCode(email, code, action);
     }
-    public boolean verifyOtp(String email, String otp, String action) {
-        String otpKey = buildKey(email, action);
+    public boolean verifyOtp(VerifiedRequest request) {
+        String otpKey = buildKey(request.getEmail(), request.getAction());
         Map<Object, Object> tempData = redisTemplate.opsForHash().entries(otpKey);
-        if (tempData == null || tempData.isEmpty()) {
+        if (tempData.isEmpty()) {
             return false;
         }
 
         String storedOtp = (String) tempData.get("otp");
-        if (storedOtp == null || !storedOtp.equals(otp)) {
+        if (storedOtp == null || !storedOtp.equals(request.getOtp())) {
             return false;
         }
         redisTemplate.delete(otpKey);
@@ -61,10 +62,10 @@ public class VerificationService {
             account = accountRepository.findById(accountId)
                     .orElseThrow(() -> new RuntimeException("Account not found"));
         } else {
-            account = accountRepository.findByEmail(email)
+            account = accountRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new RuntimeException("Account not found by email"));
         }
-        switch (action) {
+        switch (request.getAction()) {
             case "REGISTER" -> {
                 account.setStatus(Account.AccountStatus.ACTIVE);
             }
@@ -78,7 +79,7 @@ public class VerificationService {
                 if (newPassword == null || newPassword.isBlank()) return false;
                 account.setPassword(passwordEncoder.encode(newPassword));
             }
-            default -> throw new IllegalArgumentException("Unsupported action: " + action);
+            default -> throw new IllegalArgumentException("Unsupported action: " + request.getAction());
         }
 
         accountRepository.save(account);

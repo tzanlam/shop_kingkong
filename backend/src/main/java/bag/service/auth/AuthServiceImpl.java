@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String resentOtp(String email) {
+    public String resentOtp(String email, String action) {
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Account deleted or not found"));
 
@@ -93,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
             return "account already verified or auto deleted if you weren't confirm otp";
         }
 
-        String key = buildKey(email, "REGISTER");
+        String key = buildKey(email, action);
         Long ttl = redisTemplate.getExpire(key);
         if (ttl > 0) {
             return "otp already sent, please wait";
