@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
-import { clearSupportSlice, RESENT_OTP, VERIFY } from "../../redux/slices/SupportSlice";
-
+import { clearSupportSlice, VERIFY } from "../../redux/slices/SupportSlice";
+import { RESENT } from "../../redux/slices/AuthSlice"
 const OTP_LENGTH = 5;
 
 const VerificationPage = () => {
@@ -11,8 +11,7 @@ const VerificationPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const support = useSelector((s) => s.support ?? { loading:false, error:null, success:false });
-  const { loading, error, success } = support;
+  const { loading, error, success } = useSelector((s) => s.support ?? {});
 
   const email = state?.email;
   const action = state?.action || "CHANGE_PASSWORD";
@@ -34,19 +33,25 @@ const VerificationPage = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  const handleInput = useCallback((index, value) => {
-    if (!/^\d?$/.test(value)) return;
-    const next = [...code];
-    next[index] = value;
-    setCode(next);
-    if (value && index < OTP_LENGTH - 1) inputs.current[index + 1]?.focus();
-  }, [code]);
+  const handleInput = useCallback(
+    (index, value) => {
+      if (!/^\d?$/.test(value)) return;
+      const next = [...code];
+      next[index] = value;
+      setCode(next);
+      if (value && index < OTP_LENGTH - 1) inputs.current[index + 1]?.focus();
+    },
+    [code]
+  );
 
-  const handleKeyDown = useCallback((index, e) => {
-    if (e.key === "Backspace" && !code[index] && index > 0) {
-      inputs.current[index - 1]?.focus();
-    }
-  }, [code]);
+  const handleKeyDown = useCallback(
+    (index, e) => {
+      if (e.key === "Backspace" && !code[index] && index > 0) {
+        inputs.current[index - 1]?.focus();
+      }
+    },
+    [code]
+  );
 
   const handlePaste = useCallback((e) => {
     const pasted = e.clipboardData.getData("text").slice(0, OTP_LENGTH).split("");
@@ -56,14 +61,16 @@ const VerificationPage = () => {
     }
   }, []);
 
+  // ✅ Gửi object { email, action, otp } cho backend
   const submitCode = useCallback(() => {
     if (code.every((d) => d !== "")) {
-      dispatch(VERIFY({ email, otp: code.join(""), action }));
+      dispatch(VERIFY({ email, action, otp: code.join("") }));
     }
   }, [code, dispatch, email, action]);
 
+  // ✅ Resend OTP dùng email + action từ state trước đó
   const handleResend = useCallback(() => {
-    dispatch(RESENT_OTP({ email, action }));
+    dispatch(RESENT({ email, action }));
     message.success("Đã gửi lại mã OTP");
     setCode(Array(OTP_LENGTH).fill(""));
     setTimeLeft(120);
@@ -74,7 +81,7 @@ const VerificationPage = () => {
     if (success) {
       dispatch(clearSupportSlice());
       message.success("Bạn đã xác thực thành công");
-      navigate(action === "REGISTER" ? "/dashboard" : action === "CHANGE_EMAIL" ? "/profile" : "/");
+      navigate(action === "REGISTER" ? "/" : action === "CHANGE_EMAIL" ? "/profile" : "/");
     } else if (error) {
       message.error(error?.message || "Mã không hợp lệ");
       setCode(Array(OTP_LENGTH).fill(""));

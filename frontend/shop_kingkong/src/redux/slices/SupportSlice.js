@@ -1,15 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import VerifyService from "../../service/VerifyService";
 
-export const VERIFY = createAsyncThunk('support/verify', async({email, otp, action}, {rejectWithValue})=>{
+export const VERIFY = createAsyncThunk('support/verify', async(request, {rejectWithValue})=>{
     try {
-        return (await VerifyService.verify(email, otp, action)).data
+        return (await VerifyService.verify(request)).data
     } catch (error) {
         return rejectWithValue(error.data?.message || "Xảy ra lỗi không xác định trong quá trình xác thực")
     }
 })
 
-export const RESENT_OTP = createAsyncThunk();
 
 const initialState = {
     error: false,
