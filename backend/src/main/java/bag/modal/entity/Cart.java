@@ -18,6 +18,13 @@ public class Cart {
     @JoinColumn
     private Account account;
 
+    @ManyToOne
+    @JoinColumn
+    private Product product;
+
+    @Column
+    private double price;
+
     @Column
     private int quantity;
 
@@ -26,5 +33,8 @@ public class Cart {
 
     @Column
     private double totalPrice;
+
+
+
 
 }
