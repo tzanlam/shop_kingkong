@@ -75,6 +75,8 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(accessToken, null, account.getId(), account.getPosition().toString());
     }
 
+
+
     @Override
     public void logout(int accountId) {
         String key = REFRESH_TOKEN_PREFIX + accountId;

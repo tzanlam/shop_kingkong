@@ -6,26 +6,24 @@ import bag.modal.entity.ProductImage;
 import bag.modal.entity.Review;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ProductRequest {
     private String name;
     private String description;
     private double price;
     private int quantity;
-    private ProductImage image;
-    private Category category;
-    private Review review;
+    private List<String> images;
+    private int categoryId;
 
-    public void setProduct(Product product){
+
+    public void populate(Product product){
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
         product.setQuantity(quantity);
+
     }
-    public void updateProduct(Product product){
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-        product.setQuantity(quantity);
-    }
+
 }

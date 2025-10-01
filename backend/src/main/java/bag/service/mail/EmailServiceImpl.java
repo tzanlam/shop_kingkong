@@ -1,5 +1,6 @@
 package bag.service.mail;
 
+import bag.modal.entity.Account;
 import bag.modal.request.MailRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -75,6 +76,11 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    public void resendVerificationCode(String to, String code, String action) {
+        sendVerificationCode(to, code, action + " (Gửi lại)");
+    }
+
+    @Override
     public void userSendToAdmin(MailRequest request) {
         String title = "Phản hồi";
         String content = "<p><b>Email người dùng:</b> " + request.getFrom() + "</p>"
@@ -89,4 +95,8 @@ public class EmailServiceImpl implements EmailService {
             throw new RuntimeException("Gửi mail đến admin thất bại", e);
         }
     }
+
+
+
+
 }

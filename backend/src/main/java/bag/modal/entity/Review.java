@@ -14,11 +14,11 @@ public class Review extends Time{
     private int id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Product product;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Account account;
 
     @Column(nullable = false)

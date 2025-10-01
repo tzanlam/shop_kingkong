@@ -7,10 +7,14 @@ import lombok.Data;
 public class CategoryRequest {
     private String name;
     private String description;
+    private String imageUrl;
 
-    public void createCategory(){
-        Category category = new Category();
+    public Category populate(Category category){
         category.setName(name);
         category.setDescription(description);
+        category.setImageUrl(imageUrl);
+        return category;
     }
+
+
 }

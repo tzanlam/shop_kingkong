@@ -71,7 +71,21 @@ public class SecurityConfig {
                                 "/verify",
 
                                 // account
-                                "/account/register"
+                                "/account",
+                                "/account/register",
+                                //ProductImage
+                                "/productImage",
+                                //category
+                                "/category",
+                                "/category/create",
+
+                                // product
+                                "/product",
+                                "/product/getProductById",
+                                "/product/create",
+                                //review
+                                "/review",
+                                "/review/create"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

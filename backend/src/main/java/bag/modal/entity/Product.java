@@ -27,12 +27,15 @@ public class Product extends Time{
     @Column(nullable = false)
     private int quantity;
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductImage> image;
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images;
 
     @ManyToOne
     @JoinColumn
     private Category category;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
 
 
 }

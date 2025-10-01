@@ -1,7 +1,10 @@
 package bag.modal.dto;
 
 import bag.modal.entity.Product;
+import bag.modal.entity.ProductImage;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class ProductDto {
@@ -10,9 +13,9 @@ public class ProductDto {
     private String description;
     private double price;
     private int quantity;
-    private String image;
-    private String category;
-    private String review;
+    private List<ProductImage> images;
+    private int categoryId;
+
 
     public ProductDto(Product product){
         this.id = product.getId();
@@ -20,6 +23,8 @@ public class ProductDto {
         this.description = product.getDescription();
         this.price =  product.getPrice();
         this.quantity = product.getQuantity();
+        this.images = product.getImages();
+        this.categoryId = product.getCategory().getId();
 
     }
 }
