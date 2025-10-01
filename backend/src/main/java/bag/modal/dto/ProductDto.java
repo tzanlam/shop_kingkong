@@ -4,7 +4,9 @@ import bag.modal.entity.Product;
 import bag.modal.entity.ProductImage;
 import lombok.Data;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class ProductDto {
@@ -13,7 +15,7 @@ public class ProductDto {
     private String description;
     private double price;
     private int quantity;
-    private List<ProductImage> images;
+    private List<String> images;
     private int categoryId;
 
 
@@ -23,8 +25,12 @@ public class ProductDto {
         this.description = product.getDescription();
         this.price =  product.getPrice();
         this.quantity = product.getQuantity();
-        this.images = product.getImages();
-        this.categoryId = product.getCategory().getId();
+        this.images = product.getImages() != null
+                ? product.getImages().stream()
+                .map(ProductImage::getImageUrl)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
+        this.categoryId = product.getCategory() != null ? product.getCategory().getId() : 0;
 
     }
 }

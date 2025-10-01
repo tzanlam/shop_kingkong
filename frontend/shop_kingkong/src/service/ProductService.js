@@ -1,19 +1,23 @@
-import axios from "axios";
+import axiosClient from "./AxiosConfig";
 
 const ProductService = {
   getAll() {
-    return axios.get("product");
+    return axiosClient.get("product");
   },
-  getProdcutById(productId) {
-    return axios.get(`product/${productId}`);
+  getProductById(productId) {
+    return axiosClient.get(`product/${productId}`);
   },
   createProduct(productRequest) {
-    return axios.get(`product/create/${productRequest}`);
+    return axiosClient.post("product/create", productRequest);
   },
   updateProduct(productId, productRequest) {
-    return axios.get(`product/update/${productId}/${productRequest}`);
+    return axiosClient.put("product/update", productRequest, {
+      params: { id: productId },
+    });
   },
   deleteProduct(productId) {
-    return axios.get(`product/delete/${productId}`);
+    return axiosClient.delete(`product/${productId}`);
   },
 };
+
+export default ProductService;

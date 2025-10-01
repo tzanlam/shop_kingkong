@@ -38,8 +38,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto addProduct(ProductRequest request) {
         try {
-            Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException(request.getCategoryId() + "not found"));
+            Category category = null;
+            if (request.getCategoryId() > 0) { // Chỉ tìm danh mục nếu categoryId hợp lệ
+                category = categoryRepository.findById(request.getCategoryId())
+                        .orElse(null); // Không ném ngoại lệ, đặt category thành null nếu không tìm thấy
+            }
             Product product = new Product();
             request.populate(product);
             product.setCategory(category);

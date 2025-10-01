@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiFilterLine } from "react-icons/ri";
 import {
   MdKeyboardArrowDown,
@@ -8,12 +8,28 @@ import {
 import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  FETCH_PRODUCT,
+  FETCH_PRODUCTS,
+  selectProducts,
+  selectProductLoading,
+  selectProductError,
+} from "../../redux/slices/ProductSlice";
 
 const Product = () => {
+  const dispatch = useDispatch();
+  const products = useSelector(selectProducts);
+  const loading = useSelector(selectProductLoading);
+  const error = useSelector(selectProductError);
   const [sortBy, setSortBy] = useState("default");
   const [favorites, setFavorites] = useState([]);
   const [selectOption, setSelectOption] = useState([]);
   const [addToCart, setAddToCart] = useState([]);
+
+  useEffect(() => {
+    dispatch(FETCH_PRODUCTS());
+  }, [dispatch]);
 
   const toggleFavorite = (productId) => {
     setFavorites((prev) =>
@@ -52,62 +68,62 @@ const Product = () => {
     });
   };
 
-  const products = [
-    {
-      id: 1,
-      name: "Túi Xách Cao Cấp Louis Vuitton",
-      price: "25,000,000",
-      image: "https://via.placeholder.com/300x300",
-      category: "Luxury",
-      sizes: ["S", "M", "L"],
-      colors: ["black", "brown", "white"],
-    },
-    {
-      id: 2,
-      name: "Túi Đeo Chéo Gucci",
-      price: "18,500,000",
-      image: "https://via.placeholder.com/300x300",
-      category: "Designer",
-      sizes: ["S", "M"],
-      colors: ["green", "black"],
-    },
-    {
-      id: 3,
-      name: "Túi Tote Chanel",
-      price: "32,000,000",
-      image: "https://via.placeholder.com/300x300",
-      category: "Luxury",
-      sizes: ["M", "L"],
-      colors: ["black", "beige"],
-    },
-    {
-      id: 4,
-      name: "Túi Clutch Hermès",
-      price: "45,000,000",
-      image: "https://via.placeholder.com/300x300",
-      category: "Premium",
-      sizes: ["S"],
-      colors: ["red", "black"],
-    },
-    {
-      id: 5,
-      name: "Túi Backpack Prada",
-      price: "22,000,000",
-      image: "https://via.placeholder.com/300x300",
-      category: "Designer",
-      sizes: ["M", "L"],
-      colors: ["black", "navy"],
-    },
-    {
-      id: 6,
-      name: "Túi Shoulder Dior",
-      price: "28,000,000",
-      image: "https://via.placeholder.com/300x300",
-      category: "Luxury",
-      sizes: ["S", "M"],
-      colors: ["white", "pink"],
-    },
-  ];
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "Túi Xách Cao Cấp Louis Vuitton",
+  //     price: "25,000,000",
+  //     image: "https://via.placeholder.com/300x300",
+  //     category: "Luxury",
+  //     sizes: ["S", "M", "L"],
+  //     colors: ["black", "brown", "white"],
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Túi Đeo Chéo Gucci",
+  //     price: "18,500,000",
+  //     image: "https://via.placeholder.com/300x300",
+  //     category: "Designer",
+  //     sizes: ["S", "M"],
+  //     colors: ["green", "black"],
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Túi Tote Chanel",
+  //     price: "32,000,000",
+  //     image: "https://via.placeholder.com/300x300",
+  //     category: "Luxury",
+  //     sizes: ["M", "L"],
+  //     colors: ["black", "beige"],
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Túi Clutch Hermès",
+  //     price: "45,000,000",
+  //     image: "https://via.placeholder.com/300x300",
+  //     category: "Premium",
+  //     sizes: ["S"],
+  //     colors: ["red", "black"],
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Túi Backpack Prada",
+  //     price: "22,000,000",
+  //     image: "https://via.placeholder.com/300x300",
+  //     category: "Designer",
+  //     sizes: ["M", "L"],
+  //     colors: ["black", "navy"],
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Túi Shoulder Dior",
+  //     price: "28,000,000",
+  //     image: "https://via.placeholder.com/300x300",
+  //     category: "Luxury",
+  //     sizes: ["S", "M"],
+  //     colors: ["white", "pink"],
+  //   },
+  // ];
 
   const colorMap = {
     black: "bg-black",
@@ -161,91 +177,118 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl group relative"
-            >
-              <div className="relative">
-                <Link to={`/product/${product.id}`}>
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-64 object-cover cursor-pointer"
-                  />
-                </Link>
-                {/* Favorite Icon */}
-                <button
-                  onClick={() => toggleFavorite(product.id)}
-                  className="absolute top-2 right-2 text-gray-600 hover:text-red-500"
-                >
-                  {favorites.includes(product.id) ? (
-                    <MdFavorite size={24} className="text-red-500" />
-                  ) : (
-                    <MdFavoriteBorder size={24} />
-                  )}
-                </button>
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-800 truncate">
-                  {product.name}
-                </h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-sm text-gray-600">Kích thước:</span>
-                  <div className="flex gap-2">
-                    {product.sizes.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() =>
-                          handleSelection(product.id, "size", size)
-                        }
-                        className={`w-8 h-8 flex items-center justify-center rounded-full border ${
-                          selectOption[product.id]?.size === size
-                            ? "border-purple-600 bg-purple-100 text-purple-600"
-                            : "border-gray-300 text-gray-600"
-                        } text-sm font-medium hover:border-purple-600 hover:text-purple-600 transition-colors`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-sm text-gray-600">Màu sắc:</span>
-                  <div className="flex gap-2">
-                    {product.colors.map((color) => (
-                      <button
-                        key={color}
-                        onClick={() =>
-                          handleSelection(product.id, "color", color)
-                        }
-                        className={`w-6 h-6 rounded-full ${colorMap[color]} ${
-                          selectOption[product.id]?.color === color
-                            ? "ring-2 ring-purple-600 ring-offset-2"
-                            : ""
-                        } hover:ring-2 hover:ring-purple-600 hover:ring-offset-2 transition-all`}
-                        title={color}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-lg font-bold text-gray-800 mt-2">
-                  {product.price} VNĐ
-                </p>
-              </div>
-              {/* Add to Cart Button - Appears on Hover */}
-              <button
-                onClick={() => handleAddToCart(product.id)}
-                className="absolute bottom-0 left-0 right-0 bg-blue-600 text-white py-2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity "
-              >
-                <HiOutlineShoppingCart size={20} />
-                Thêm vào giỏ
-              </button>
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-12">
+            <div className="text-lg text-gray-600">Đang tải sản phẩm...</div>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-12">
+            <div className="text-lg text-red-600">
+              Lỗi: {error.message || "Đã xảy ra lỗi khi tải sản phẩm"}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
+
+        {/* Products Grid */}
+        {!loading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {products && products.length > 0 ? (
+              products.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl group relative"
+                >
+                  <div className="relative">
+                    <Link to={`/product/${product.id}`}>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-64 object-cover cursor-pointer"
+                      />
+                    </Link>
+                    {/* Favorite Icon */}
+                    <button
+                      onClick={() => toggleFavorite(product.id)}
+                      className="absolute top-2 right-2 text-gray-600 hover:text-red-500"
+                    >
+                      {favorites.includes(product.id) ? (
+                        <MdFavorite size={24} className="text-red-500" />
+                      ) : (
+                        <MdFavoriteBorder size={24} />
+                      )}
+                    </button>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-800 truncate">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-sm text-gray-600">Kích thước:</span>
+                      <div className="flex gap-2">
+                        {product.sizes.map((size) => (
+                          <button
+                            key={size}
+                            onClick={() =>
+                              handleSelection(product.id, "size", size)
+                            }
+                            className={`w-8 h-8 flex items-center justify-center rounded-full border ${
+                              selectOption[product.id]?.size === size
+                                ? "border-purple-600 bg-purple-100 text-purple-600"
+                                : "border-gray-300 text-gray-600"
+                            } text-sm font-medium hover:border-purple-600 hover:text-purple-600 transition-colors`}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-sm text-gray-600">Màu sắc:</span>
+                      <div className="flex gap-2">
+                        {product.colors.map((color) => (
+                          <button
+                            key={color}
+                            onClick={() =>
+                              handleSelection(product.id, "color", color)
+                            }
+                            className={`w-6 h-6 rounded-full ${
+                              colorMap[color]
+                            } ${
+                              selectOption[product.id]?.color === color
+                                ? "ring-2 ring-purple-600 ring-offset-2"
+                                : ""
+                            } hover:ring-2 hover:ring-purple-600 hover:ring-offset-2 transition-all`}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-lg font-bold text-gray-800 mt-2">
+                      {product.price} VNĐ
+                    </p>
+                  </div>
+                  {/* Add to Cart Button - Appears on Hover */}
+                  <button
+                    onClick={() => handleAddToCart(product.id)}
+                    className="absolute bottom-0 left-0 right-0 bg-blue-600 text-white py-2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity "
+                  >
+                    <HiOutlineShoppingCart size={20} />
+                    Thêm vào giỏ
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <div className="text-lg text-gray-600">
+                  Không có sản phẩm nào
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
