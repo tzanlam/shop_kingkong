@@ -5,6 +5,7 @@ import bag.modal.dto.AuthResponse;
 import bag.modal.entity.Account;
 import bag.modal.request.AuthRequest;
 import bag.repository.AccountRepository;
+import bag.service.verification.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+
+import static bag.support.method.Support.buildKey;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenUtil jwtTokenUtil;
     private final AccountRepository accountRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final VerificationService verificationService;
 
     private static final String REFRESH_TOKEN_PREFIX = "refreshToken:";
 
@@ -44,8 +48,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         String key = REFRESH_TOKEN_PREFIX + userDetails.getId();
-        redisTemplate.opsForValue().set(key, refreshToken, 7, TimeUnit.DAYS);
-
+        redisTemplate.opsForValue().set(key, refreshToken, Duration.ofDays(7));
         return new AuthResponse(accessToken, refreshToken, userDetails.getId(), userDetails.getPosition());
     }
 
@@ -59,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
         String key = REFRESH_TOKEN_PREFIX + accountId;
 
         String storedToken = redisTemplate.opsForValue().get(key);
-        if (storedToken == null || !storedToken.equals(refreshToken)) {
+        if (!storedToken.equals(refreshToken)) {
             throw new RuntimeException("Refresh token not recognized or expired");
         }
 
@@ -81,5 +84,23 @@ public class AuthServiceImpl implements AuthService {
     public void logout(int accountId) {
         String key = REFRESH_TOKEN_PREFIX + accountId;
         redisTemplate.delete(key);
+    }
+
+    @Override
+    public String resentOtp(String email, String action) {
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Account deleted or not found"));
+
+        if (account.getStatus() != Account.AccountStatus.NOT_VERIFIED) {
+            return "account already verified or auto deleted if you weren't confirm otp";
+        }
+
+        String key = buildKey(email, action);
+        Long ttl = redisTemplate.getExpire(key);
+        if (ttl > 0) {
+            return "otp already sent, please wait";
+        }
+        verificationService.createAndSendVerificationEmail(email, "REGISTER");
+        return "otp sent";
     }
 }

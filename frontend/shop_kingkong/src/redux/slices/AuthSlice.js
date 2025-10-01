@@ -26,11 +26,20 @@ export const REFRESH = createAsyncThunk("auth/refresh", async (_, { rejectWithVa
   }
 });
 
+export const RESENT = createAsyncThunk("auth/resent", async({email, action}, { rejectWithValue })=>{
+  try {
+    return (await AuthService.resentOtp(email, action)).data
+  } catch (error) {
+    return rejectWithValue(error.response?.data || "Resent otp failed") 
+  }
+})
+
 const initialState = {
   loading: false,
   error: null,
   accessToken: null,
   accountId: null,
+  otp: null
 };
 
 const setPending = (state) => {
@@ -53,6 +62,7 @@ const AuthSlice = createSlice({
       state.accountId = action.payload.accountId || null;
       state.error = null;
       state.loading = false;
+      state.otp = null;
     }
   },
   extraReducers: (builder) => {
@@ -83,7 +93,15 @@ const AuthSlice = createSlice({
         state.accessToken = action.payload.accessToken;
         state.accountId = action.payload.accountId || null;
       })
-      .addCase(REFRESH.rejected, setRejected);
+      .addCase(REFRESH.rejected, setRejected)
+
+      // Resent otp
+      .addCase(RESENT.pending, setPending)
+      .addCase(RESENT.fulfilled, (state, action) => {
+        state.loading = false
+        state.otp = action.payload
+      })
+      .addCase(RESENT.rejected, setRejected)
   },
 });
 

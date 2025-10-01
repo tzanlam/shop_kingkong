@@ -16,6 +16,9 @@ const AuthService = {
   refresh() {
     return axiosRaw.post("auth/refresh");
   },
+  resentOtp(email, action){
+    return axiosRaw.post(`auth/resent?email=${email}&action=${action}`)
+  }
 };
 
 export default AuthService;

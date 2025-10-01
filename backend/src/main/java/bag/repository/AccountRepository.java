@@ -22,4 +22,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     long deleteByStatusAndCreatedDateBefore(Account.AccountStatus status, LocalDateTime cutoff);
 
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
+            "FROM Account a WHERE a.email = :email AND a.status = :status")
+    boolean isAccountNotVerified(@Param("email") String email,
+                                 @Param("status") Account.AccountStatus status);
 }
