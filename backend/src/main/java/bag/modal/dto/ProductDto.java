@@ -2,6 +2,7 @@ package bag.modal.dto;
 
 import bag.modal.entity.Product;
 import bag.modal.entity.ProductImage;
+import bag.modal.entity.Review;
 import lombok.Data;
 
 import java.util.Collections;
@@ -16,6 +17,7 @@ public class ProductDto {
     private double price;
     private int quantity;
     private List<String> images;
+    private List<ReviewDto> reviews;
     private int categoryId;
 
 
@@ -28,6 +30,11 @@ public class ProductDto {
         this.images = product.getImages() != null
                 ? product.getImages().stream()
                 .map(ProductImage::getImageUrl)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
+        this.reviews = product.getReviews() != null
+                ? product.getReviews().stream()
+                .map(ReviewDto::new)
                 .collect(Collectors.toList())
                 : Collections.emptyList();
         this.categoryId = product.getCategory() != null ? product.getCategory().getId() : 0;

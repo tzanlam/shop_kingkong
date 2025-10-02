@@ -22,6 +22,7 @@ public class ProductImageController {
         }
     }
     @GetMapping("/{id}")
+
     public ResponseEntity<?> getById(@PathVariable("id") int id){
         try{
             return ResponseEntity.ok(productImageService.getProductImageById(id));

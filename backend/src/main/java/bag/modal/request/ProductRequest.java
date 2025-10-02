@@ -16,13 +16,13 @@ public class ProductRequest {
     private int quantity;
     private List<String> images;
     private int categoryId;
+    private List<String> reviews;
 
     public void populate(Product product){
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
         product.setQuantity(quantity);
-
     }
 
 }

@@ -1,6 +1,7 @@
 package bag.modal.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import lombok.Data;
 
 @Entity
@@ -13,10 +14,10 @@ public class ProductImage {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Product product;
 
-    @Column
+    @Column @Max(20)
     private String imageUrl;
 
     @Column
