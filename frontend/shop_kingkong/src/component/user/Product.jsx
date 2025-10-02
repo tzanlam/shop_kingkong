@@ -134,6 +134,18 @@ const Product = () => {
     red: "bg-red-600",
     navy: "bg-blue-900",
     pink: "bg-pink-400",
+    blue: "bg-blue-500",
+    yellow: "bg-yellow-400",
+    purple: "bg-purple-500",
+    gray: "bg-gray-500",
+    orange: "bg-orange-500",
+  };
+
+  // Function to get color class with fallback
+  const getColorClass = (color) => {
+    return (
+      colorMap[color?.toLowerCase()] || "bg-gray-300 border border-gray-400"
+    );
   };
 
   return (
@@ -187,7 +199,10 @@ const Product = () => {
         {error && (
           <div className="text-center py-12">
             <div className="text-lg text-red-600">
-              Lỗi: {error.message || "Đã xảy ra lỗi khi tải sản phẩm"}
+              Lỗi:{" "}
+              {typeof error === "string"
+                ? error
+                : error.message || "Đã xảy ra lỗi khi tải sản phẩm"}
             </div>
           </div>
         )}
@@ -195,7 +210,7 @@ const Product = () => {
         {/* Products Grid */}
         {!loading && !error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products && products.length > 0 ? (
+            {products && Array.isArray(products) && products.length > 0 ? (
               products.map((product) => (
                 <div
                   key={product.id}
@@ -203,11 +218,35 @@ const Product = () => {
                 >
                   <div className="relative">
                     <Link to={`/product/${product.id}`}>
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-64 object-cover cursor-pointer"
-                      />
+                      <div className="relative w-full h-64">
+                        {product.image ? (
+                          <img
+                            src={product.image}
+                            alt={product.name || "Product"}
+                            className="w-full h-64 object-cover cursor-pointer"
+                            onError={(e) => {
+                              // Hide the broken image and show placeholder div
+                              e.target.style.display = "none";
+                              const placeholder =
+                                e.target.parentElement.querySelector(
+                                  ".placeholder-div"
+                                );
+                              if (placeholder) {
+                                placeholder.style.display = "flex";
+                              }
+                            }}
+                          />
+                        ) : null}
+                        {/* Placeholder div - shown when no image or image fails to load */}
+                        <div
+                          className="placeholder-div absolute inset-0 w-full h-64 bg-gray-200 flex items-center justify-center cursor-pointer"
+                          style={{ display: product.image ? "none" : "flex" }}
+                        >
+                          <span className="text-gray-500 text-sm">
+                            Không có hình ảnh
+                          </span>
+                        </div>
+                      </div>
                     </Link>
                     {/* Favorite Icon */}
                     <button
@@ -223,51 +262,60 @@ const Product = () => {
                   </div>
                   <div className="p-4">
                     <h3 className="text-lg font-semibold text-gray-800 truncate">
-                      {product.name}
+                      {product.name || "Unnamed Product"}
                     </h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-sm text-gray-600">Kích thước:</span>
-                      <div className="flex gap-2">
-                        {product.sizes.map((size) => (
-                          <button
-                            key={size}
-                            onClick={() =>
-                              handleSelection(product.id, "size", size)
-                            }
-                            className={`w-8 h-8 flex items-center justify-center rounded-full border ${
-                              selectOption[product.id]?.size === size
-                                ? "border-purple-600 bg-purple-100 text-purple-600"
-                                : "border-gray-300 text-gray-600"
-                            } text-sm font-medium hover:border-purple-600 hover:text-purple-600 transition-colors`}
-                          >
-                            {size}
-                          </button>
-                        ))}
+                    {/* Sizes - only show if sizes exist */}
+                    {product.sizes && product.sizes.length > 0 && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm text-gray-600">
+                          Kích thước:
+                        </span>
+                        <div className="flex gap-2">
+                          {product.sizes.map((size) => (
+                            <button
+                              key={size}
+                              onClick={() =>
+                                handleSelection(product.id, "size", size)
+                              }
+                              className={`w-8 h-8 flex items-center justify-center rounded-full border ${
+                                selectOption[product.id]?.size === size
+                                  ? "border-purple-600 bg-purple-100 text-purple-600"
+                                  : "border-gray-300 text-gray-600"
+                              } text-sm font-medium hover:border-purple-600 hover:text-purple-600 transition-colors`}
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-sm text-gray-600">Màu sắc:</span>
-                      <div className="flex gap-2">
-                        {product.colors.map((color) => (
-                          <button
-                            key={color}
-                            onClick={() =>
-                              handleSelection(product.id, "color", color)
-                            }
-                            className={`w-6 h-6 rounded-full ${
-                              colorMap[color]
-                            } ${
-                              selectOption[product.id]?.color === color
-                                ? "ring-2 ring-purple-600 ring-offset-2"
-                                : ""
-                            } hover:ring-2 hover:ring-purple-600 hover:ring-offset-2 transition-all`}
-                            title={color}
-                          />
-                        ))}
+                    )}
+
+                    {/* Colors - only show if colors exist */}
+                    {product.colors && product.colors.length > 0 && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-sm text-gray-600">Màu sắc:</span>
+                        <div className="flex gap-2">
+                          {product.colors.map((color) => (
+                            <button
+                              key={color}
+                              onClick={() =>
+                                handleSelection(product.id, "color", color)
+                              }
+                              className={`w-6 h-6 rounded-full ${getColorClass(
+                                color
+                              )} ${
+                                selectOption[product.id]?.color === color
+                                  ? "ring-2 ring-purple-600 ring-offset-2"
+                                  : ""
+                              } hover:ring-2 hover:ring-purple-600 hover:ring-offset-2 transition-all`}
+                              title={color}
+                            />
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <p className="text-lg font-bold text-gray-800 mt-2">
-                      {product.price} VNĐ
+                      {product.price ? `${product.price} VNĐ` : "Liên hệ"}
                     </p>
                   </div>
                   {/* Add to Cart Button - Appears on Hover */}
@@ -283,7 +331,9 @@ const Product = () => {
             ) : (
               <div className="col-span-full text-center py-12">
                 <div className="text-lg text-gray-600">
-                  Không có sản phẩm nào
+                  {products === null || products === undefined
+                    ? "Đang tải dữ liệu sản phẩm..."
+                    : "Không có sản phẩm nào"}
                 </div>
               </div>
             )}
