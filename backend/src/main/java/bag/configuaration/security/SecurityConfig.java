@@ -87,6 +87,7 @@ public class SecurityConfig {
                                 "/product",
                                 "/product/getProductById",
                                 "/product/create",
+                                "/product/update",
                                 //review
                                 "/review",
                                 "/review/create"

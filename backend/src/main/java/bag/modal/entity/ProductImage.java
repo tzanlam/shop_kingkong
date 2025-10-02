@@ -17,7 +17,7 @@ public class ProductImage {
     @JoinColumn(nullable = false)
     private Product product;
 
-    @Column @Max(20)
+    @Column
     private String imageUrl;
 
     @Column
