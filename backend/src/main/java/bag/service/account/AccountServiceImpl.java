@@ -61,28 +61,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void changePassword(String newPassword, int accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(
-                () -> new RuntimeException("Account not found")
-        );
-        verificationService.createAndSendVerificationEmail(account.getEmail(), "CHANGE_PASSWORD");
-        String key = Support.buildKey(account.getEmail(), "CHANGE_PASSWORD");
-        redisTemplate.opsForHash().put(key, "accountId", String.valueOf(accountId));
-        redisTemplate.opsForHash().put(key, "newPassword", newPassword);
-        redisTemplate.expire(key, Duration.ofMinutes(5));
+    public void changePassword(AccountRequest request, int accountId) {
+        Account account = getAccountOrThrow(accountId);
 
+        sendVerificationAndCache(account.getEmail(), "CHANGE_PASSWORD", accountId, "newPassword", request.getPassword());
     }
 
     @Override
-    public void changeEmail(String newEmail, int accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(
-                () -> new RuntimeException("Account not found")
-        );
-        verificationService.createAndSendVerificationEmail(newEmail, "CHANGE_EMAIL");
-        String key = Support.buildKey(account.getEmail(), "CHANGE_EMAIL");
-        redisTemplate.opsForHash().put(key, "accountId", String.valueOf(accountId));
-        redisTemplate.opsForHash().put(key, "newEmail", newEmail);
-        redisTemplate.expire(key, Duration.ofMinutes(5));
+    public void changeEmail(AccountRequest request, int accountId) {
+        getAccountOrThrow(accountId);
+
+        sendVerificationAndCache(request.getEmail(), "CHANGE_EMAIL", accountId, "newEmail", request.getEmail());
     }
 
     @Override
@@ -93,5 +82,19 @@ public class AccountServiceImpl implements AccountService {
         request.deleteAccount(account);
         accountRepository.save(account);
         return new AccountDto(account);
+    }
+
+    private Account getAccountOrThrow(int accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+    }
+
+    private void sendVerificationAndCache(String email, String action, int accountId, String keyField, String value) {
+        verificationService.createAndSendVerificationEmail(email, action);
+
+        String redisKey = Support.buildKey(email, action);
+        redisTemplate.opsForHash().put(redisKey, "accountId", String.valueOf(accountId));
+        redisTemplate.opsForHash().put(redisKey, keyField, value);
+        redisTemplate.expire(redisKey, Duration.ofMinutes(5));
     }
 }

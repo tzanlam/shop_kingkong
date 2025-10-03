@@ -38,7 +38,6 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<?> refresh(HttpServletRequest request){
         try {
             String refreshToken = null;

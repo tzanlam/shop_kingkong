@@ -80,7 +80,7 @@ public class JwtTokenUtil {
 
     private String doGenerateToken(Map<String, Object> claims, String subject, boolean isRefreshToken) {
         long now = System.currentTimeMillis();
-        long expirationTime = isRefreshToken ? refreshTokenExpiration : accessTokenExpiration;
+        long expirationTime = (isRefreshToken ? refreshTokenExpiration : accessTokenExpiration) * 1000;
         String secret = isRefreshToken ? refreshTokenSecret : accessTokenSecret;
 
         return Jwts.builder()
