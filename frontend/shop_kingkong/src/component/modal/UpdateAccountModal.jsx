@@ -25,7 +25,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
 
   const handleFinish = (values, type) => {
     if (type === "CHANGE_EMAIL") {
-      dispatch(UPDATE_EMAIL({ newEmail: values.newEmail, accountId: account.id }))
+      dispatch(UPDATE_EMAIL({ accountRequest: { email: values.newEmail }, accountId: account.id }))
         .unwrap()
         .then(() => {
           message.success("OTP đã được gửi tới email mới!");
@@ -34,7 +34,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
         })
         .catch((err) => message.error(err || "Đổi email thất bại"));
     } else if (type === "CHANGE_PASSWORD") {
-      dispatch(UPDATE_PASSWORD({ newPassword: values.newPassword, accountId: account.id }))
+      dispatch(UPDATE_PASSWORD({ accountRequest: { password: values.newPassword }, accountId: account.id }))
         .unwrap()
         .then(() => {
           message.success("OTP đã được gửi để xác nhận đổi mật khẩu!");
@@ -82,7 +82,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
         centered
         // Ẩn title để Tabs làm header giống ảnh
         title={null}
-        bodyStyle={{ paddingTop: 16 }}
+        styles={{ paddingTop: 16 }}
       >
         <Tabs
           defaultActiveKey="changePassword"
