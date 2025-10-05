@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table
@@ -38,6 +40,9 @@ public class Account extends Time{
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AccountStatus status;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts;
 
     public enum Position {
         USER, ADMIN

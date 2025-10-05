@@ -37,5 +37,9 @@ public class Product extends Time{
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Review> reviews;
 
+    @ManyToOne
+    @JoinColumn(nullable = true)
+    private Cart cart;
+
 
 }

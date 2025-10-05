@@ -8,9 +8,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
-//    @Query("select c.products from Cart c where c.id = :cartId")
-//    List<Product> findProducts(@Param("CartId")int cartId) ;
+   @Query("SELECT c FROM Cart c LEFT JOIN FETCH c.products WHERE c.id = :cartId")
+    Optional<Cart> findByIdWithProducts(@Param("cartId") int cartId);
+
 }

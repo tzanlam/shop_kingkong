@@ -22,7 +22,7 @@ public class Category {
     @Column
     private String imageUrl;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Product> products;
 
 

@@ -19,6 +19,7 @@ public class ProductDto {
     private List<String> images;
     private List<ReviewDto> reviews;
     private int categoryId;
+    private int cartId;
 
 
     public ProductDto(Product product){
@@ -37,7 +38,8 @@ public class ProductDto {
                 .map(ReviewDto::new)
                 .collect(Collectors.toList())
                 : Collections.emptyList();
-        this.categoryId = product.getCategory() != null ? product.getCategory().getId() : 0;
+        this.categoryId = product.getCategory().getId();
+        this.cartId = product.getCart().getId();
 
     }
 }

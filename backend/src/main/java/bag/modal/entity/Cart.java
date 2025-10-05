@@ -2,6 +2,7 @@ package bag.modal.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,18 +10,18 @@ import java.util.List;
 @Data
 @Entity
 @Table
-public class Cart {
+@EqualsAndHashCode(callSuper=true)
+public class Cart extends Time {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
-    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Account account;
 
-    @ManyToOne
-    @JoinColumn
-    private Product product;
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    private List<Product> products;
 
     @Column
     private double price;

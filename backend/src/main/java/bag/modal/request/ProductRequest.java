@@ -17,6 +17,8 @@ public class ProductRequest {
     private List<String> images;
     private int categoryId;
     private List<String> reviews;
+    private int cartId;
+
 
     public void populate(Product product){
         product.setName(name);

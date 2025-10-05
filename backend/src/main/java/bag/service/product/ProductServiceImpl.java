@@ -1,9 +1,11 @@
 package bag.service.product;
 
 import bag.modal.dto.ProductDto;
+import bag.modal.entity.Cart;
 import bag.modal.entity.Category;
 import bag.modal.entity.Product;
 import bag.modal.request.ProductRequest;
+import bag.repository.CartRepository;
 import bag.repository.CategoryRepository;
 import bag.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,13 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CartRepository cartRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, CartRepository cartRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.cartRepository = cartRepository;
     }
 
     @Override
@@ -39,17 +44,20 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto addProduct(ProductRequest request) {
         try {
             Category category = null;
-            if (request.getCategoryId() > 0) { // Chỉ tìm danh mục nếu categoryId hợp lệ
+            if (request.getCategoryId() > 0) {
                 category = categoryRepository.findById(request.getCategoryId())
-                        .orElse(null); // Không ném ngoại lệ, đặt category thành null nếu không tìm thấy
+                        .orElse(null);
             }
+            Cart cart = cartRepository.findById(request.getCartId())
+                    .orElseThrow(() -> new RuntimeException(request.getCartId() + "not found"));
             Product product = new Product();
             request.populate(product);
+            product.setCart(cart);
             product.setCategory(category);
             productRepository.save(product);
             return new ProductDto(product);
         } catch (Exception e) {
-            throw new RuntimeException("Create product failed");
+            throw new RuntimeException("Create product failed! " +e.getMessage());
         }
     }
 
@@ -64,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         try {
             request.populate(product);
-
+            product.setCategory(category);
             productRepository.save(product);
             return new ProductDto(product);
         } catch (Exception e) {

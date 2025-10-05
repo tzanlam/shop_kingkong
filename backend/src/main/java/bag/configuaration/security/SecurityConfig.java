@@ -70,6 +70,8 @@ public class SecurityConfig {
 
                                 // verify
                                 "/verify",
+                                //resend
+                                "/resend",
 
                                 // account
                                 "/account",
@@ -90,7 +92,11 @@ public class SecurityConfig {
                                 "/product/update",
                                 //review
                                 "/review",
-                                "/review/create"
+                                "/review/create",
+
+                                //cart
+                                "/cart",
+                                "/cart/create"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
