@@ -52,7 +52,6 @@ public class AccountRequest {
         account.setPhoneNumber(phoneNumber);
         account.setCity(city);
         account.setAddress(address);
-        account.setStatus(Account.AccountStatus.INACTIVE);
     }
 
     public void deleteAccount(Account account){
