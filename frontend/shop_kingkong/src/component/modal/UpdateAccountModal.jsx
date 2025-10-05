@@ -43,7 +43,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
         })
         .catch((err) => message.error(err || "Đổi mật khẩu thất bại"));
     } else if (type === "UPDATE_INFORMATION") {
-      dispatch(UPDATE_INFORMATION({ ...values, accountId: account.id }))
+      dispatch(UPDATE_INFORMATION({accountRequest: { ...values}, accountId: account.id }))
         .unwrap()
         .then(() => {
           message.success("Cập nhật thông tin thành công!");
