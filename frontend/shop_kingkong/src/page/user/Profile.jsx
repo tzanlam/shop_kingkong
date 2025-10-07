@@ -7,9 +7,6 @@ import {
   Divider,
   Avatar,
   Button,
-  Tooltip,
-  Switch,
-  Space,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -23,18 +20,9 @@ import {
   PhoneOutlined,
   HomeOutlined,
   EnvironmentOutlined,
-  IdcardOutlined,
-  UserSwitchOutlined,
 } from "@ant-design/icons";
-import { HiMiniSparkles } from "react-icons/hi2";
 import UpdateAccountModal from "../../component/modal/UpdateAccountModal";
-
-const statusColors = {
-  ACTIVE: "green",
-  INACTIVE: "red",
-  PENDING: "orange",
-  BANNED: "volcano",
-};
+import ButtonDeleteAccount from "../../component/button/ButtonDeleteAccount";
 
 const Profile = () => {
   const accountId = useSelector((state) => state.auth.accountId);
@@ -42,7 +30,6 @@ const Profile = () => {
   const account = useSelector(selectAccount);
   const loading = useSelector(selectAccountLoading);
   const [openModal, setOpenModal] = useState(false);
-  const [showSystemInfo, setShowSystemInfo] = useState(false); // ⬅️ mặc định ẩn
 
   useEffect(() => {
     if (accountId) dispatch(FETCH_ACCOUNT(accountId));
@@ -78,32 +65,14 @@ const Profile = () => {
           </div>
         }
         extra={
-          <Space size={12}>
-            <Tooltip title={showSystemInfo ? "Ẩn thông tin hệ thống" : "Hiện thông tin hệ thống"}>
-              <Switch
-                checkedChildren="Hệ thống"
-                unCheckedChildren="Hệ thống"
-                checked={showSystemInfo}
-                onChange={setShowSystemInfo}
-                size="small"
-              />
-            </Tooltip>
-
-            <Button
-              type="primary"
-              size="middle"
-              onClick={() => setOpenModal(true)}
-              icon={<HiMiniSparkles size={18} />}
-              style={{
-                background: "#1677ff",
-                borderColor: "#1677ff",
-                borderRadius: 12,
-                fontWeight: 600,
-              }}
-            >
-              Cập nhật
-            </Button>
-          </Space>
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => setOpenModal(true)}
+            style={{ background: "#111", borderColor: "#111", borderRadius: 12, fontWeight: 600 }}
+          >
+            Cập nhật
+          </Button>
         }
         bodyStyle={{ paddingTop: 12 }}
       >
@@ -127,32 +96,9 @@ const Profile = () => {
             {account.address || "Chưa cập nhật"}
           </Descriptions.Item>
         </Descriptions>
-
-        {/* Thông tin hệ thống – có thể ẩn/hiện */}
-        {showSystemInfo && (
-          <>
-            <Divider orientation="left" plain>
-              <span className="font-semibold">⚙️ Thông tin hệ thống</span>
-            </Divider>
-            <Descriptions
-              bordered
-              column={1}
-              labelStyle={{ fontWeight: 600, width: 160 }}
-              className="rounded-xl overflow-hidden"
-            >
-              <Descriptions.Item label={<IdcardOutlined />}>
-                {account.position}
-              </Descriptions.Item>
-              <Descriptions.Item label={<UserSwitchOutlined />}>
-                <Tag color={statusColors[account.status] || "default"} style={{ fontWeight: 600 }}>
-                  {account.status}
-                </Tag>
-              </Descriptions.Item>
-            </Descriptions>
-          </>
-        )}
       </Card>
 
+      <ButtonDeleteAccount accountId={account.id} className="mt-4" />
       <UpdateAccountModal
         open={openModal}
         onClose={() => setOpenModal(false)}
