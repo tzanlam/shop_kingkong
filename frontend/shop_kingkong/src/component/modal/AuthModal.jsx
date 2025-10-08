@@ -8,7 +8,6 @@ import { REGISTER } from "../../redux/slices/AccountSlice";
 const AuthModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const loading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
 
@@ -18,9 +17,12 @@ const AuthModal = ({ open, onClose }) => {
   const handleLogin = (values) => {
     dispatch(LOGIN(values))
       .unwrap()
-      .then(() => {
+      .then((response) => {
         onClose?.();
         message.success("Đăng nhập thành công!");
+        if (response.position === "ADMIN") {
+          navigate("/admin");
+        }
       })
       .catch((err) => {
         message.error(err?.message || error || "Đăng nhập thất bại!");
@@ -30,15 +32,12 @@ const AuthModal = ({ open, onClose }) => {
   const handleRegister = (values) => {
     dispatch(REGISTER(values))
       .unwrap()
-      // eslint-disable-next-line no-unused-vars
-      .then((res) => {
+      .then(() => {
         onClose?.();
         message.success("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
-        // Truyền kèm email/action sang trang verify (tuỳ bạn dùng)
         navigate("/verify", { state: { email: values.email, action: "REGISTER" } });
       })
       .catch((err) => {
-        // Hiển thị lỗi trả về từ API
         message.error(err?.message || "Đăng ký thất bại! Vui lòng thử lại.");
       });
   };

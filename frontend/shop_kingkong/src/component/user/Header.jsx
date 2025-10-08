@@ -28,7 +28,7 @@ const Header = () => {
   const handleLogout = (myId) => {
     dispatch(LOGOUT(myId))
       .unwrap()
-      .then(() => setOpenDropdown(false));
+      .then(() => {setOpenDropdown(false); navigate("/")});
   };
 
   const handleMouseEnter = () => {

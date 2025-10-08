@@ -14,7 +14,7 @@ function App() {
         <RouterProvider router={router} />
       </PersistGate>
       <ToastContainer
-        position="top-center" // Đặt ở giữa phía trên
+        position="top-center"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}

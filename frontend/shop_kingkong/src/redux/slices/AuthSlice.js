@@ -26,20 +26,22 @@ export const REFRESH = createAsyncThunk("auth/refresh", async (_, { rejectWithVa
   }
 });
 
-export const RESENT = createAsyncThunk("auth/resent", async({email, action}, { rejectWithValue })=>{
+export const RESENT = createAsyncThunk("auth/resent", async ({ email, action }, { rejectWithValue }) => {
   try {
-    return (await AuthService.resentOtp(email, action)).data
+    return (await AuthService.resentOtp(email, action)).data;
   } catch (error) {
-    return rejectWithValue(error.response?.data || "Resent otp failed") 
+    return rejectWithValue(error.response?.data || "Resent otp failed");
   }
-})
+});
 
 const initialState = {
   loading: false,
   error: null,
   accessToken: null,
+  refreshToken: null,
   accountId: null,
-  otp: null
+  position: null,
+  otp: null,
 };
 
 const setPending = (state) => {
@@ -59,60 +61,65 @@ const AuthSlice = createSlice({
     clearAuth: () => initialState,
     setAuth: (state, action) => {
       state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
       state.accountId = action.payload.accountId || null;
+      state.position = action.payload.position || null;
       state.error = null;
       state.loading = false;
       state.otp = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
-      // Login
       .addCase(LOGIN.pending, setPending)
       .addCase(LOGIN.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
         state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
         state.accountId = action.payload.accountId || null;
+        state.position = action.payload.position || null;
       })
       .addCase(LOGIN.rejected, setRejected)
-
-      // Logout
       .addCase(LOGOUT.pending, setPending)
       .addCase(LOGOUT.fulfilled, (state) => {
         state.loading = false;
         state.error = null;
         state.accessToken = null;
+        state.refreshToken = null;
         state.accountId = null;
+        state.position = null;
       })
       .addCase(LOGOUT.rejected, setRejected)
-
-      // Refresh Token
       .addCase(REFRESH.pending, setPending)
       .addCase(REFRESH.fulfilled, (state, action) => {
         state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
         state.accountId = action.payload.accountId || null;
+        state.position = action.payload.position || null;
       })
       .addCase(REFRESH.rejected, setRejected)
-
-      // Resent otp
       .addCase(RESENT.pending, setPending)
       .addCase(RESENT.fulfilled, (state, action) => {
-        state.loading = false
-        state.otp = action.payload
+        state.loading = false;
+        state.otp = action.payload;
       })
-      .addCase(RESENT.rejected, setRejected)
+      .addCase(RESENT.rejected, setRejected);
   },
 });
 
 export const selectAuthLoading = (state) => state.auth.loading;
 export const selectAuthError = (state) => state.auth.error;
 export const selectAccessToken = (state) => state.auth.accessToken;
+export const selectRefreshToken = (state) => state.auth.refreshToken;
 export const selectAccountId = (state) => state.auth.accountId;
+export const selectPosition = (state) => state.auth.position;
 export const selectIsAuthenticated = (state) => Boolean(state.auth.accessToken);
 export const selectAuthInfo = (state) => ({
   accessToken: state.auth.accessToken,
+  refreshToken: state.auth.refreshToken,
   accountId: state.auth.accountId,
+  position: state.auth.position,
 });
 
 export const { clearAuth, setAuth } = AuthSlice.actions;

@@ -6,6 +6,8 @@ import Profile from "../page/user/Profile";
 import VerificationPage from "../page/both/VerificationPage";
 import Product from "../component/user/Product";
 import Cart from "../component/user/Cart";
+import PrivateRoute from "./PrivateRouter";
+import AdminLayout from "../layout/AdminLayout";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,15 @@ const router = createBrowserRouter([
       {
         path: "/cart",
         element: <Cart />,
+      },
+    ],
+  },
+  {
+    element: <PrivateRoute requiredPosition="ADMIN" />,
+    children: [
+      {
+        path: "/admin",
+        element: <AdminLayout />,
       },
     ],
   },
