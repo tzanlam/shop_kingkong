@@ -8,6 +8,8 @@ import Product from "../component/user/Product";
 import Cart from "../component/user/Cart";
 import PrivateRoute from "./PrivateRouter";
 import AdminLayout from "../layout/AdminLayout";
+import AccountManagement from "../page/admin/AccountManagement";
+import AccountDetails from "../page/admin/AccountDetails";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +47,15 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminLayout />,
+        children: [
+          { path: "dashboard", element: <div>Dashboard Content</div> },
+          { path: "products", element: <div>Products Content</div> },
+          { path: "orders", element: <div>Orders Content</div> },
+          { path: "customers", element: <AccountManagement /> },
+          { path: "customers/account-details/:id", element: <AccountDetails /> },
+          { path: "reviews", element: <div>Reviews Content</div> },
+          { path: "settings", element: <div>Settings Content</div> },
+        ],
       },
     ],
   },

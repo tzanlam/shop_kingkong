@@ -7,22 +7,22 @@ const AdminSidebar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { key: '/dashboard', icon: <HomeOutlined />, label: <Link to="/dashboard">Dashboard</Link> },
-    { key: '/products', icon: <BoxPlotOutlined />, label: <Link to="/products">Products</Link> },
-    { key: '/orders', icon: <ShoppingCartOutlined />, label: <Link to="/orders">Orders</Link> },
-    { key: '/customers', icon: <UserOutlined />, label: <Link to="/customers">Customers</Link> },
-    { key: '/reviews', icon: <StarOutlined />, label: <Link to="/reviews">Reviews</Link> },
-    { key: '/settings', icon: <SettingOutlined />, label: <Link to="/settings">Settings</Link> },
+    { key: '/admin/dashboard', icon: <HomeOutlined />, label: <Link to="/admin/dashboard">Dashboard</Link> },
+    { key: '/admin/products', icon: <BoxPlotOutlined />, label: <Link to="/admin/products">Products</Link> },
+    { key: '/admin/orders', icon: <ShoppingCartOutlined />, label: <Link to="/admin/orders">Orders</Link> },
+    { key: '/admin/customers', icon: <UserOutlined />, label: <Link to="/admin/customers">Customers</Link> },
+    { key: '/admin/reviews', icon: <StarOutlined />, label: <Link to="/admin/reviews">Reviews</Link> },
+    { key: '/admin/settings', icon: <SettingOutlined />, label: <Link to="/admin/settings">Settings</Link> },
   ];
 
   return (
-    <div className="h-screen bg-gradient-to-b from-gray-800 to-gray-900 text-white p-6">
-      <h2 className="text-2xl font-bold mb-6">KINGKONG</h2>
+    <div style={{ padding: '16px 0', color: '#fff' }}>
+      <h2 className="text-2xl font-bold mb-6 text-center" style={{ marginTop: '10px' }}>KINGKONG</h2>
       <Menu
         mode="inline"
         defaultSelectedKeys={[location.pathname]}
         style={{ background: 'transparent', border: 'none', color: '#fff' }}
-        items={menuItems}
+        items={menuItems.map(item => ({ ...item, style: { color: '#fff' } }))}
       />
     </div>
   );
