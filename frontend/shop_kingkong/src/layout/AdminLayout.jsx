@@ -22,14 +22,12 @@ const AdminLayout = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ padding: '0 20px', background: '#fff', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
-        <AdminHeader title={getTitle()} />
-      </Header>
-      <Layout hasSider>
-        <Sider width={250} style={{ background: '#001529', minHeight: 'calc(100vh - 64px)' }}>
+      <AdminHeader title={getTitle()} style={{ boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', position: 'relative', zIndex: 1, }} />
+      <Layout style={{ display: 'flex', flexDirection: 'row', height: 'calc(100vh - 30px)' }}>
+        <Sider width={250} style={{ background: '#001529', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 2, overflowY: 'auto' }}>
           <AdminSidebar />
         </Sider>
-        <Content style={{ padding: '20px', background: '#fff', minHeight: 'calc(100vh - 64px)' }}>
+        <Content style={{ marginLeft: 250, padding: '20px', background: '#fff', minHeight: '100%', flex: 1 }}>
           <Outlet context={{ title: getTitle() }} />
         </Content>
       </Layout>
